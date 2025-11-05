@@ -1,0 +1,20 @@
+<div class="profiles-page">
+  <h1>Perfis Públicos</h1>
+  <p>
+    Explore alguns perfis anonimizados para conhecer quem está no GeoMatch.
+    Cadastre-se para se conectar com essas pessoas!
+  </p>
+
+  <div class="profiles-list">
+    <% @users.each do |user| %>
+      <div class="profile-item">
+        <p><strong>Usuário:</strong> <%= user.username %></p>
+        <p><strong>Entrou no GeoMatch em:</strong> <%= user.created_at.strftime('%d/%m/%Y') %></p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="cta-buttons">
+    <%= link_to "Cadastre-se", new_user_registration_path, class: "btn btn-primary" %>
+  </div>
+</div>

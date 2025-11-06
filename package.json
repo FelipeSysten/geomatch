@@ -7,6 +7,6 @@
     "esbuild": "^0.25.12"
   },
   "scripts": {
-  "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --external:@hotwired/turbo-rails --external:@hotwired/stimulus --external:@hotwired/stimulus-loading --external:controllers"
-}
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --external:@hotwired/turbo-rails --external:@hotwired/stimulus --external:@hotwired/stimulus-loading --external:controllers"
+  }
 }

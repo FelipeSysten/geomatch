@@ -1,40 +1,31 @@
 class UsersController < ApplicationController
+  before_action :authenticate_user!
+  # before_action :set_user, only: [:show, :update_location]
+
+  # Página principal de descoberta
+  def discover
+  end
+
+  # Endpoint JSON para o mapa buscar usuários próximos
   def nearby
-    # Valida se os parâmetros latitude e longitude foram fornecidos
-    if params[:latitude].blank? || params[:longitude].blank?
-      render json: { error: "Parâmetros 'latitude' e 'longitude' são obrigatórios." }, status: :unprocessable_entity
-      return
+    # Atualiza coordenadas do usuário, se vierem por parâmetro
+    if params[:latitude].present? && params[:longitude].present?
+      current_user.update(latitude: params[:latitude], longitude: params[:longitude])
     end
 
-    # Lê os parâmetros recebidos
-    latitude = params[:latitude].to_f
-    longitude = params[:longitude].to_f
-    distance = params[:distance].to_f || 10 # Usa 10 km como padrão
+    # Chama o service que faz a busca via Geocoder
+    service = DiscoveryService.new(current_user)
+    nearby_users = service.find_nearby_users(10) # raio de 10 km
 
-    # Garante que o usuário atual esteja autenticado
-    if current_user.nil?
-      render json: { error: "Usuário não autenticado." }, status: :unauthorized
-      return
-    end
-
-    # Busca os usuários próximos
-    users = User.where.not(id: current_user.id) # Exclui o próprio usuário
-                .where(share_location: true) # Apenas quem compartilha sua localização
-                .where.not(latitude: nil, longitude: nil) # Ignora coordenadas nulas
-                .near([latitude, longitude], distance) # Busca num raio especificado
-
-    # Retorna os resultados como JSON
-    render json: users.map { |user|
-      {
-        id: user.id,
-        username: user.username,
-        latitude: user.latitude,
-        longitude: user.longitude,
-        address: user.address || "Endereço não informado"
-      }
-    }
+    render json: nearby_users
   rescue => e
-    # Tratar possíveis erros
-    render json: { error: "Erro interno: #{e.message}" }, status: :internal_server_error
+    Rails.logger.error "Erro no endpoint /users/nearby: #{e.message}"
+    render json: { error: "Erro interno ao buscar usuários próximos" }, status: :internal_server_error
+  end
+
+  private
+
+  def set_user
+    @user = User.find(params[:id])
   end
 end

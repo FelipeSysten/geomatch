@@ -1,53 +1,54 @@
-// Aguarde a DOM ser carregada antes de executar o script
 document.addEventListener("DOMContentLoaded", () => {
-  // Verifica se o navegador suporta Geolocation
+  const mapContainer = document.getElementById("map");
+  if (!mapContainer) return;
+
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const userLat = position.coords.latitude;
         const userLng = position.coords.longitude;
 
-        // Inicializa o mapa na localização do usuário
+        // Inicializa o mapa
         const map = L.map("map").setView([userLat, userLng], 13);
 
-        // Configuração da camada TileLayer do OpenStreetMap
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
           attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         }).addTo(map);
 
-        // Faz a requisição para buscar usuários próximos (API backend)
+        // Marcador do usuário atual
+        L.marker([userLat, userLng])
+          .addTo(map)
+          .bindPopup("<b>Você está aqui</b>")
+          .openPopup();
+
+        // Buscar usuários próximos
         fetch(`/users/nearby?latitude=${userLat}&longitude=${userLng}`)
           .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao carregar usuários próximos");
-            }
+            if (!response.ok) throw new Error("Erro ao buscar usuários");
             return response.json();
           })
           .then((data) => {
-            // Adiciona marcadores no mapa para cada usuário retornado
             data.forEach((user) => {
-              L.marker([user.latitude, user.longitude])
-                .bindPopup(
-                  `<b>${user.name || "Usuário"}</b><br>${user.address || "Sem endereço"}`
-                )
-                .addTo(map);
+              if (user.latitude && user.longitude) {
+                L.marker([user.latitude, user.longitude])
+                  .addTo(map)
+                  .bindPopup(
+                    `<b>${user.username || "Usuário"}</b><br>Distância: ${user.distance_km} km`
+                  );
+              }
             });
           })
           .catch((error) => {
-            console.error("Erro ao buscar usuários próximos:", error.message);
+            console.error("Erro ao buscar usuários próximos:", error);
           });
       },
-      // Caso não seja possível acessar a localização
       (error) => {
-        console.error("Erro ao obter localização:", error.message);
-        alert(
-          "Não foi possível acessar sua localização. Verifique as permissões do navegador."
-        );
+        alert("Não foi possível acessar sua localização.");
+        console.error(error);
       }
     );
   } else {
-    console.error("Geolocation não é suportado pelo navegador.");
-    alert("Seu navegador não suporta Geolocalização. Atualize para um navegador mais moderno.");
+    alert("Seu navegador não suporta geolocalização.");
   }
 });

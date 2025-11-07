@@ -6,8 +6,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   # Geocoding functionalities
-  geocoded_by :address
-  after_validation :geocode, if: :will_save_change_to_address?
+   geocoded_by :address
+  after_validation :geocode, if: ->(obj){ obj.address.present? && obj.will_save_change_to_address? }
 
   # Buscar usuários num raio de distância específico (em km)
   scope :nearby, ->(latitude, longitude, distance = 10) {

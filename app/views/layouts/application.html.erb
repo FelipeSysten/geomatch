@@ -5,6 +5,8 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <meta name="csrf-token" content="<%= csrf_meta_tags %>">
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
 
@@ -21,6 +23,7 @@
     <div class="container">
       <%= yield %>
     </div>
+    
 
     <%= javascript_include_tag "map", type: "module" %>
   </body>

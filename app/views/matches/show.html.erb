@@ -1,9 +1,152 @@
-<!-- app/views/matches/show.html.erb -->
-<!-- ... Conteúdo do chat ... -->
+<div class="chat-container">
+  <div class="chat-header">
+    <h2>💬 Conversa com <%= @match.other_user(current_user).display_name %></h2>
+    <%= link_to "⬅ Voltar", matches_path, class: "back-button" %>
+  </div>
 
-<div id="messages">
-  <%= render @messages %>
+  <div id="chat-messages" class="chat-messages">
+    <% @messages.each do |message| %>
+      <div class="message <%= message.sender == current_user ? 'sent' : 'received' %>">
+        <div class="message-content">
+          <p><%= message.content %></p>
+          <span class="timestamp"><%= message.created_at.strftime("%H:%M") %></span>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="chat-form">
+    <%= form_with model: [@match, @message], local: true, class: "message-form" do |f| %>
+      <%= f.text_field :content, placeholder: "Digite uma mensagem...", class: "message-input", autocomplete: "off" %>
+      <%= f.submit "Enviar", class: "send-button" %>
+    <% end %>
+  </div>
 </div>
 
-<!-- O Kaminari também oferece um helper para "carregar mais" (load more) -->
-<%= paginate @messages, remote: true %>
+<style>
+  .chat-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    overflow: hidden;
+    font-family: "Inter", sans-serif;
+  }
+
+  .chat-header {
+    background: #ff4d6d;
+    color: #fff;
+    padding: 16px;
+    text-align: center;
+    position: relative;
+  }
+
+  .back-button {
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.2em;
+  }
+
+  .chat-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #f7f8fa;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    max-width: 75%;
+    padding: 10px 15px;
+    border-radius: 20px;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .message.sent {
+    background-color: #dcf8c6;
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+  }
+
+  .message.received {
+    background-color: #fff;
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+    border: 1px solid #eee;
+  }
+
+  .message-content p {
+    margin: 0;
+    font-size: 0.95em;
+  }
+
+  .timestamp {
+    font-size: 0.75em;
+    color: #999;
+    text-align: right;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .chat-form {
+    border-top: 1px solid #ddd;
+    background: #fff;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .message-form {
+    width: 100%;
+    display: flex;
+    gap: 8px;
+  }
+
+  .message-input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 0.95em;
+  }
+
+  .send-button {
+    background-color: #ff4d6d;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .send-button:hover {
+    background-color: #e0435f;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+
+<script>
+  // Scroll automático para o final do chat ao carregar
+  document.addEventListener("DOMContentLoaded", () => {
+    const chatMessages = document.getElementById("chat-messages");
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+</script>

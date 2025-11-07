@@ -1,14 +1,15 @@
+# app/controllers/users_controller.rb
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  # before_action :set_user, only: [:show, :update_location]
 
-  # Página principal de descoberta
+  # Página principal de descoberta (renderiza o mapa)
   def discover
+    @nearby_users = DiscoveryService.new(current_user).find_nearby_users
   end
 
   # Endpoint JSON para o mapa buscar usuários próximos
   def nearby
-    # Atualiza coordenadas do usuário, se vierem por parâmetro
+    # Atualiza coordenadas do usuário, se vierem no request
     if params[:latitude].present? && params[:longitude].present?
       current_user.update(latitude: params[:latitude], longitude: params[:longitude])
     end
@@ -21,11 +22,5 @@ class UsersController < ApplicationController
   rescue => e
     Rails.logger.error "Erro no endpoint /users/nearby: #{e.message}"
     render json: { error: "Erro interno ao buscar usuários próximos" }, status: :internal_server_error
-  end
-
-  private
-
-  def set_user
-    @user = User.find(params[:id])
   end
 end

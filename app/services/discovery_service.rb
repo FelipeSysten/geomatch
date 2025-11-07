@@ -1,3 +1,4 @@
+# app/services/discovery_service.rb
 class DiscoveryService
   def initialize(user)
     @user = user
@@ -8,13 +9,20 @@ class DiscoveryService
 
     User.near([@user.latitude, @user.longitude], radius_km)
         .where.not(id: @user.id)
-        .select(:id, :username, :latitude, :longitude)
         .map do |u|
           distance = Geocoder::Calculations.distance_between(
             [@user.latitude, @user.longitude],
             [u.latitude, u.longitude]
-          ).round(2)
-          u.attributes.merge(distance_km: distance)
+          ).round(1)
+
+          {
+            id: u.id,
+            username: u.username,
+            latitude: u.latitude,
+            longitude: u.longitude,
+            avatar_url: (u.avatar.attached? ? Rails.application.routes.url_helpers.url_for(u.avatar) : nil),
+            distance_km: distance
+          }
         end
   end
 end

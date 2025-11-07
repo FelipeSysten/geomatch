@@ -1,9 +1,30 @@
 class MessagesController < ApplicationController
-def show
-  @match = Match.find(params[:id])
-  # Paginação das mensagens, exibindo as mais recentes primeiro
-  @messages = @match.messages.order(created_at: :desc).page(params[:page]).per(20)
-  # Kaminari permite reverter a ordem para exibir as mais antigas primeiro
-  # e carregar as páginas de baixo para cima (útil para chat)
-  @messages = @messages.reverse
+  before_action :authenticate_user!
+  before_action :set_match
+
+  def index
+    @messages = @match.messages.order(created_at: :asc)
+    render json: @messages
+  end
+
+  def create
+    @message = @match.messages.build(message_params)
+    @message.sender = current_user
+
+    if @message.save
+      redirect_to match_path(@match)
+    else
+      render "matches/show", alert: "Erro ao enviar mensagem."
+    end
+  end
+
+  private
+
+  def set_match
+    @match = Match.find(params[:match_id])
+  end
+
+  def message_params
+    params.require(:message).permit(:content)
+  end
 end

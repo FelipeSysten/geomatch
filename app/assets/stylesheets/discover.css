@@ -1,0 +1,12 @@
+/* app/assets/stylesheets/discover.css */
+.discover-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.like-btn:hover {
+  background: #2563eb;
+  transform: scale(1.05);
+  transition: 0.2s;
+}

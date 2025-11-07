@@ -1,10 +1,43 @@
-<!-- app/views/matches/index.html.erb -->
-<h1>Seus Matches</h1>
+<div class="container mt-5">
+  <h1 class="text-center mb-4">💬 Seus Matches</h1>
 
-<% @matches.each do |match| %>
-  <!-- Exibir informações do match -->
-  <p><%= link_to "Chat com #{match.other_user(current_user).display_name}", match_path(match) %></p>
-<% end %>
+  <% if @matches.any? %>
+    <div class="row">
+      <% @matches.each do |match| %>
+        <% other = match.other_user(current_user) %>
 
-<!-- Helper de Paginação do Kaminari -->
-<%= paginate @matches %>
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="card shadow-sm border-0 rounded-4 h-100">
+            <div class="card-body d-flex align-items-center">
+              <% if other.avatar.attached? %>
+                <%= image_tag other.avatar.variant(resize_to_fill: [60, 60]), 
+                      class: "rounded-circle me-3 border border-2 border-light shadow-sm" %>
+              <% else %>
+                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" 
+                     style="width: 60px; height: 60px;">
+                  <%= other.display_name[0].upcase rescue "?" %>
+                </div>
+              <% end %>
+
+              <div>
+                <h5 class="card-title mb-1"><%= other.display_name %></h5>
+                <p class="text-muted mb-2"><%= other.bio.presence || "Sem descrição ainda 😅" %></p>
+                <%= link_to "Abrir Chat 💌", match_path(match), class: "btn btn-primary btn-sm px-3" %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="d-flex justify-content-center mt-4">
+      
+    </div>
+  <% else %>
+    <div class="text-center text-muted py-5">
+      <h4>Você ainda não tem nenhum match 😢</h4>
+      <p>Comece curtindo perfis para encontrar alguém interessante!</p>
+      <%= link_to "Descobrir pessoas 🔍", discover_path, class: "btn btn-outline-primary mt-3" %>
+    </div>
+  <% end %>
+</div>

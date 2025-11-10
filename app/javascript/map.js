@@ -33,62 +33,90 @@ document.addEventListener("DOMContentLoaded", async () => {
         showUserPopup(user);
       });
     });
-  }
 
-function showUserPopup(user) {
-  const popup = document.getElementById("user-popup");
-  const avatar = document.getElementById("popup-avatar");
-  const username = document.getElementById("popup-username");
-  const location = document.getElementById("popup-location");
-  const distance = document.getElementById("popup-distance");
+    // === NOVO: renderiza usuários reais na sidebar lateral ===
+    const listContainer = document.getElementById("users-list");
+    if (listContainer) {
+      listContainer.innerHTML = ""; // limpa lista anterior
 
-  // Armazena o ID do usuário atual no popup
-  popup.dataset.userId = user.id;
+      users.forEach((user) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <img src="${user.avatar_url || '/default-avatar.png'}" alt="${user.username || 'Usuário'}">
+          <span>${user.username || "Usuário"} ${
+          user.distance_km ? `(${user.distance_km} km)` : ""
+        }</span>
+        `;
 
-  // Atualiza informações
-  avatar.src = user.avatar_url || "/default-avatar.png";
-  username.textContent = user.username || "Usuário desconhecido";
-  location.textContent = user.city || "Localização não informada";
-  distance.textContent = user.distance_km
-    ? `a ~${user.distance_km} km de você`
-    : "";
+        li.addEventListener("click", () => {
+          map.setView([user.latitude, user.longitude], 15);
+          showUserPopup(user);
+        });
 
-  popup.classList.remove("hidden");
-  popup.classList.add("show");
-}
-
-// === Listener do botão de curtir ===
-document.addEventListener("click", async (e) => {
-  if (e.target && e.target.id === "like-btn") {
-    const popup = document.getElementById("user-popup");
-    const likedUserId = popup.dataset.userId;
-
-    if (!likedUserId) return;
-
-    try {
-      const token = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-
-      const response = await fetch("/likes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": token,
-        },
-        body: JSON.stringify({ user_id: likedUserId }),
+        listContainer.appendChild(li);
       });
-
-      if (response.ok) {
-        alert("❤️ Você curtiu esse usuário!");
-      } else {
-        const data = await response.json().catch(() => ({}));
-        alert(`Erro ao curtir: ${data.error || response.statusText}`);
-      }
-    } catch (error) {
-      console.error("Erro ao enviar curtida:", error);
-      alert("⚠️ Falha ao enviar curtida. Verifique o console.");
     }
+
+    // 🔹 Emite evento para o HTML saber que os usuários foram carregados
+    document.dispatchEvent(new CustomEvent('usersLoaded', { detail: users }));
   }
-});
+
+  function showUserPopup(user) {
+    const popup = document.getElementById("user-popup");
+    const avatar = document.getElementById("popup-avatar");
+    const username = document.getElementById("popup-username");
+    const location = document.getElementById("popup-location");
+    const distance = document.getElementById("popup-distance");
+
+    // Armazena o ID do usuário atual no popup
+    popup.dataset.userId = user.id;
+
+    // Atualiza informações
+    avatar.src = user.avatar_url || "/default-avatar.png";
+    username.textContent = user.username || "Usuário desconhecido";
+    location.textContent = user.city || "Localização não informada";
+    distance.textContent = user.distance_km
+      ? `a ~${user.distance_km} km de você`
+      : "";
+
+    popup.classList.remove("hidden");
+    popup.classList.add("show");
+  }
+
+  // === Listener do botão de curtir ===
+  document.addEventListener("click", async (e) => {
+    if (e.target && e.target.id === "like-btn") {
+      const popup = document.getElementById("user-popup");
+      const likedUserId = popup.dataset.userId;
+
+      if (!likedUserId) return;
+
+      try {
+        const token = document
+          .querySelector('meta[name="csrf-token"]')
+          .getAttribute("content");
+
+        const response = await fetch("/likes", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": token,
+          },
+          body: JSON.stringify({ user_id: likedUserId }),
+        });
+
+        if (response.ok) {
+          alert("❤️ Você curtiu esse usuário!");
+        } else {
+          const data = await response.json().catch(() => ({}));
+          alert(`Erro ao curtir: ${data.error || response.statusText}`);
+        }
+      } catch (error) {
+        console.error("Erro ao enviar curtida:", error);
+        alert("⚠️ Falha ao enviar curtida. Verifique o console.");
+      }
+    }
+  });
 });
 
 // Estilo do marcador com avatar circular

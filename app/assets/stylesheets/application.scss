@@ -5,6 +5,8 @@
 @use "sass:color";
 @use "discover";
 @use "public";
+@use "profile";
+@use "map";
 
 // 🎨 Paleta de cores
 $color-primary: #d4af37; // dourado
@@ -613,6 +615,183 @@ html, body {
 
     .app-links img {
       width: 110px;
+    }
+  }
+}
+
+
+// --------------------------------------------------
+// Página de Perfil do Usuário - GeoMatch
+// --------------------------------------------------
+
+.profile-container {
+  max-width: 700px;
+  margin: 4rem auto;
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  padding: 3rem 2.5rem;
+  text-align: center;
+  font-family: "Poppins", sans-serif;
+  color: #121212;
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: #d4af37;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 600;
+      color: #222;
+      margin-bottom: 0.4rem;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.2s ease-in-out;
+      background: #fafafa;
+
+      &:focus {
+        border-color: #d4af37;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        outline: none;
+      }
+    }
+
+    textarea {
+      resize: none;
+      min-height: 120px;
+    }
+
+    .flex {
+      display: flex;
+      justify-content: center;
+    }
+
+    .btn-save {
+      background: #d4af37;
+      color: #121212;
+      font-weight: 700;
+      padding: 0.9rem 1.6rem;
+      border: none;
+      border-radius: 12px;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25);
+
+      &:hover {
+        background: darken(#d4af37, 8%);
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  // Avatar
+  .avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    .avatar-frame {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 4px solid rgba(212, 175, 55, 0.7);
+      background: #f4f4f4;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      position: relative;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .placeholder {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #aaa;
+        font-size: 2.5rem;
+      }
+    }
+
+    .btn-upload {
+      background: #121212;
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #d4af37;
+        color: #121212;
+        box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+      }
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  }
+
+  // Alerta de erro
+  #error_explanation {
+    background: rgba(255, 59, 92, 0.1);
+    border: 1.5px solid rgba(255, 59, 92, 0.4);
+    color: #ff3b5c;
+    padding: 1rem;
+    border-radius: 10px;
+    text-align: left;
+    font-size: 0.9rem;
+
+    p {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    ul {
+      margin-left: 1rem;
+      list-style: disc;
+    }
+  }
+}
+
+// --------------------------------------------------
+// Responsividade
+// --------------------------------------------------
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 2rem 1.2rem;
+
+    h1 {
+      font-size: 1.7rem;
+    }
+
+    .avatar-section .avatar-frame {
+      width: 100px;
+      height: 100px;
     }
   }
 }

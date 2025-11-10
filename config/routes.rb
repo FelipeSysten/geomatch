@@ -27,6 +27,12 @@ Rails.application.routes.draw do
   # Usuários (exibição e atualização)
   resources :users, only: [:show, :update]
 
+  # ADIÇÃO CORRIGIDA PARA A TELA "MEU PERFIL"
+  # Usa 'resource :profile' para evitar conflito com a rota /users/edit do Devise
+  # Mapeia para o UsersController
+  resource :profile, controller: 'users', only: [:edit, :update]
+
+
   # Logout rápido (atalho amigável)
   devise_scope :user do
     delete "/logout", to: "devise/sessions#destroy", as: :logout

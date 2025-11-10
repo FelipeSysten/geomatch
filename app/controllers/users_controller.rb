@@ -23,4 +23,28 @@ class UsersController < ApplicationController
     Rails.logger.error "Erro no endpoint /users/nearby: #{e.message}"
     render json: { error: "Erro interno ao buscar usuários próximos" }, status: :internal_server_error
   end
+  
+   # Ação para exibir o formulário de edição de perfil
+  def edit
+    @user = current_user
+  end
+
+  # Ação para processar a atualização do perfil
+ def update
+  @user = current_user
+  if @user.update(user_params)
+    redirect_to edit_profile_path, notice: "Perfil atualizado com sucesso!"
+  else
+    render :edit
+  end
+end
+
+
+  private
+
+  def user_params
+    # Strong parameters: permite a atualização de username, bio e avatar
+    # Inclui :username e :bio que já existem na tabela
+    params.require(:user).permit(:username, :bio, :avatar)
+  end
 end

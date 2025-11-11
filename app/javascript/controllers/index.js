@@ -1,11 +1,17 @@
-// Importação do Stimulus Application
-import { Application } from "@hotwired/stimulus";
-// Importação de carregamento de controllers
-import { eagerLoadControllersFrom } from "@hotwired/stimulus-loading";
-// Criação da instância da aplicação Stimulus
-const application = Application.start();
+// Importa o Stimulus Application
+import { Application } from "@hotwired/stimulus"
 
-// Carrega todos os controllers do Stimulus a partir do diretório atual
-eagerLoadControllersFrom("controllers", application);
+// Cria a instância da aplicação Stimulus
+const application = Application.start()
 
-export { application };
+// Importa automaticamente todos os controllers do diretório atual
+const controllers = import.meta.globEager("./**/*_controller.js")
+
+for (const path in controllers) {
+  const controller = controllers[path].default
+  if (controller && controller.identifier) {
+    application.register(controller.identifier, controller)
+  }
+}
+
+export { application }

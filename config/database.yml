@@ -19,16 +19,17 @@ test:
 
 production:
   <<: *default
-  # Render fornece automaticamente o DATABASE_URL, então só isso basta
+  # Render define automaticamente a variável DATABASE_URL,
+  # então o Rails se conecta por ela.
   url: <%= ENV["DATABASE_URL"] %>
 
-  # 🔁 Garante que o Solid Queue use o mesmo banco da aplicação
+  # 🔁 Faz o Solid Queue (fila de jobs) usar o mesmo banco da aplicação.
   connects_to:
     database:
       writing: primary
       queue: primary
 
-  # ⚡ Garante que o Action Cable também use a mesma conexão PostgreSQL
+  # ⚡ Garante que o Action Cable (SolidCable) use a mesma conexão PostgreSQL.
   cable:
     adapter: postgresql
     url: <%= ENV["DATABASE_URL"] %>

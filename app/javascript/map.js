@@ -1,4 +1,5 @@
 import L from "leaflet";
+import "leaflet.markercluster"; // Importa a biblioteca de clusterização
 
 // Garante compatibilidade com Turbo e DOM normal
 ["DOMContentLoaded", "turbo:load"].forEach((evt) => {
@@ -9,24 +10,39 @@ import L from "leaflet";
       return;
     }
 
-    const map = L.map("map").setView([-14.788, -39.278], 13); // Itabuna como base
+    // Define a localização padrão (Itabuna) caso a geolocalização falhe
+    const defaultLat = -14.788;
+    const defaultLng = -39.278;
+    const defaultZoom = 13;
+
+    const map = L.map("map").setView([defaultLat, defaultLng], defaultZoom); // Itabuna como base
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap",
-    }).addTo(map);
+    } ).addTo(map);
 
     // Obtém localização atual e envia para backend
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
 
+      // 🎯 CORREÇÃO 1: Centraliza o mapa na localização do usuário
+      map.setView([latitude, longitude], 13);
+
       // Atualiza backend
       await fetch(`/users/nearby?latitude=${latitude}&longitude=${longitude}`);
+      loadNearbyUsers();
+    }, (error) => {
+      console.error("Erro ao obter localização:", error);
+      // Se falhar, carrega usuários com a localização padrão (Itabuna)
       loadNearbyUsers();
     });
 
     async function loadNearbyUsers() {
       const response = await fetch("/users/nearby");
       const users = await response.json();
+
+      // 🎯 CORREÇÃO 3: Implementa Marker Clustering para lidar com usuários no mesmo local
+      const markers = L.markerClusterGroup();
 
       users.forEach((user) => {
         const icon = L.divIcon({
@@ -35,12 +51,20 @@ import L from "leaflet";
           iconSize: [40, 40],
         });
 
-        const marker = L.marker([user.latitude, user.longitude], { icon }).addTo(map);
+        const marker = L.marker([user.latitude, user.longitude], { icon });
+
+        // Adiciona um popup simples para o caso de clique em um único marcador
+        marker.bindPopup(`<b>${user.username}</b>  
+${user.city}`);
 
         marker.on("click", () => {
           showUserPopup(user);
         });
+
+        markers.addLayer(marker);
       });
+
+      map.addLayer(markers);
 
       // === NOVO: renderiza usuários reais na sidebar lateral ===
       const listContainer = document.getElementById("users-list");
@@ -114,7 +138,14 @@ import L from "leaflet";
           });
 
           if (response.ok) {
-            alert("❤️ Você curtiu esse usuário!");
+            const data = await response.json();
+            if (data.status === "already_liked") {
+              alert("Você já curtiu este usuário. Não é possível curtir duas vezes."); // 🎯 CORREÇÃO 2: Trata o 'already_liked'
+            } else if (data.message === "💘 Deu match!") {
+              alert("🎉 MATCH! Vocês se curtiram!");
+            } else {
+              alert("❤️ Curtida enviada!");
+            }
           } else {
             const data = await response.json().catch(() => ({}));
             alert(`Erro ao curtir: ${data.error || response.statusText}`);
@@ -128,14 +159,14 @@ import L from "leaflet";
   });
 });
 
-// Estilo do marcador com avatar circular
+// Estilo do marcador com avatar circular (mantido no JS para compatibilidade com o Leaflet.divIcon)
 const style = document.createElement("style");
 style.textContent = `
   .marker-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    border: 3px solid #00aaff;
+    border: 3px solid #d4af37; /* Cor primária */
     object-fit: cover;
   }
 `;

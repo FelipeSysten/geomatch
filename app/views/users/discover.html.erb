@@ -1,21 +1,23 @@
 <h2 class="text-center mt-3">Descubra pessoas próximas</h2>
 
-<div class="map-container">
-  <div id="map" style="width: 100%; height: 500px; border-radius: 10px;"></div>
+<div class="map-page-container">
+  <div id="map"></div>
 
   <!-- Sidebar dinâmica de usuários próximos -->
   <div id="nearby-users" class="nearby-users">
     <h4>👥 Usuários próximos</h4>
-    <ul id="users-list"></ul>
+    <ul id="users-list">
+      <li class="text-center">Carregando usuários...</li>
+    </ul>
   </div>
 </div>
 
-<!-- Popup fixo -->
+<!-- Popup fixo (Bottom Sheet) -->
 <div id="user-popup" class="user-popup hidden">
   <div class="popup-content">
     <div class="user-info">
       <img id="popup-avatar" src="" alt="Avatar" class="avatar">
-      <div>
+      <div class="user-details">
         <h3 id="popup-username"></h3>
         <p id="popup-location"></p>
         <p id="popup-distance" class="distance"></p>
@@ -30,148 +32,4 @@
   </div>
 </div>
 
-<script type="module" src="<%= asset_path 'map.js' %>"></script>
-
-<script>
-  // 🔹 Quando o map.js terminar de renderizar os usuários, ele pode emitir um evento customizado
-  // que traz o array de usuários reais carregados no mapa.
-  // Este script escuta esse evento e atualiza a sidebar automaticamente.
-
-  document.addEventListener('usersLoaded', (event) => {
-    const users = event.detail; // Array de usuários reais (ex: [{id, username, avatar_url, distance, ...}, ...])
-    const list = document.getElementById('users-list');
-    list.innerHTML = '';
-
-    users.forEach(user => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <img src="${user.avatar_url || 'https://i.pravatar.cc/50'}" alt="${user.username}">
-        <span>${user.username} (${user.distance || '—'})</span>
-      `;
-      li.addEventListener('click', () => {
-        // Opcional: simula clique no marcador do mapa
-        const markerClick = new CustomEvent('focusUserOnMap', { detail: user });
-        document.dispatchEvent(markerClick);
-      });
-      list.appendChild(li);
-    });
-  });
-</script>
-
-<style>
-  .map-container {
-    position: relative;
-  }
-
-  /* Sidebar lateral */
-  .nearby-users {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 220px;
-    max-height: 460px;
-    overflow-y: auto;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    padding: 10px;
-    font-family: 'Poppins', sans-serif;
-    z-index: 999;
-  }
-
-  .nearby-users h4 {
-    text-align: center;
-    margin-bottom: 8px;
-    font-size: 16px;
-    font-weight: 600;
-  }
-
-  .nearby-users ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .nearby-users li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-    padding: 6px;
-    border-radius: 8px;
-    transition: background 0.2s;
-    cursor: pointer;
-  }
-
-  .nearby-users li:hover {
-    background: #f2f2f2;
-  }
-
-  .nearby-users img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #00aaff;
-  }
-
-  .nearby-users span {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-  }
-
-  .user-popup {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: #fff;
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
-    padding: 15px;
-    transition: all 0.3s ease;
-    transform: translateY(100%);
-  }
-
-  .user-popup.show {
-    transform: translateY(0);
-  }
-
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-  }
-
-  .avatar {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    border: 3px solid #00aaff;
-    object-fit: cover;
-  }
-
-  .popup-actions {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-  }
-
-  .btn {
-    flex: 1;
-    margin: 0 4px;
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-  }
-
-  .btn.like { background: #ff5a5f; color: white; }
-  .btn.message { background: #007bff; color: white; }
-  .btn.go { background: #002bff; color: white; }
-
-  .hidden { display: none; }
-</style>
+<%= javascript_include_tag "map", type: "module" %>

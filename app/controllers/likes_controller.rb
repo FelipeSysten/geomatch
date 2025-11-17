@@ -16,9 +16,19 @@ class LikesController < ApplicationController
 
     if @like.save
       if Like.exists?(liker_id: liked_user.id, liked_id: current_user.id)
-        Match.create(user_id: current_user.id, matched_user_id: liked_user.id, status: "matched")
-        Match.create(user_id: liked_user.id, matched_user_id: current_user.id, status: "matched")
-
+        # Verifica se o match já existe para evitar duplicatas
+        existing_match = Match.where(
+          "(user_id = ? AND matched_user_id = ?) OR (user_id = ? AND matched_user_id = ?)",
+          current_user.id, liked_user.id,
+          liked_user.id, current_user.id
+        ).first
+        
+        unless existing_match
+          # Cria apenas um match com o usuário de menor ID como user_id (para garantir unicidade)
+          user_id = [current_user.id, liked_user.id].min
+          matched_user_id = [current_user.id, liked_user.id].max
+          Match.create(user_id: user_id, matched_user_id: matched_user_id, status: "matched")
+        end
         render json: { message: "💘 Deu match!" }, status: :ok
       else
         render json: { message: "Curtida enviada!" }, status: :ok

@@ -16,6 +16,8 @@ $white: #ffffff;
 @use "public";
 @use "profile";
 @use "map";
+@use "matches";
+@use "chat";
 @use "devise"; // <--- AGORA IMPORTA DEPOIS DAS VARIÁVEIS
 
 // 🧱 Layout base

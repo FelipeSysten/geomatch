@@ -30,7 +30,7 @@ Rails.application.configure do
  # config.active_storage.resolve_model_to_route = :public
  config.active_storage.service_urls_expire_in = nil
 
- config.active_storage.resolve_model_to_route = :public
+ # config.active_storage.resolve_model_to_route = :public
  config.active_storage.url_options = {
   host: ENV["R2_PUBLIC_HOST"]
 }

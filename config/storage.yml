@@ -13,7 +13,7 @@ r2:
   bucket: <%= ENV["R2_BUCKET"] %>
   endpoint: <%= ENV["R2_ENDPOINT"] %>
   force_path_style: true
-  region: autoS
+  region: auto
 
   # ⚠️ NECESSÁRIO PARA R2 FUNCIONAR
   upload:

@@ -27,7 +27,7 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :r2
 
- config.active_storage.resolve_model_to_route = :public
+ # config.active_storage.resolve_model_to_route = :public
  config.active_storage.service_urls_expire_in = nil
   
 

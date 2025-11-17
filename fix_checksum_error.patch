@@ -1,0 +1,10 @@
+--- a/geomatch/app/controllers/users_controller.rb
++++ b/geomatch/app/controllers/users_controller.rb
+@@ -48,6 +48,6 @@
+   def user_params
+     # Strong parameters: permite a atualização de username, bio e avatar
+     # Inclui :username e :bio que já existem na tabela
+-    params.require(:user).permit(:username, :bio, :avatar)
++    params.require(:user).permit(:username, :bio, :avatar).except(:checksum)
+   end
+ end

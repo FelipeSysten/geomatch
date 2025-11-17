@@ -32,7 +32,7 @@ class UsersController < ApplicationController
   # Ação para processar a atualização do perfil
  def update
   @user = current_user
-  if @user.update(user_params)
+  if @user.update(user_params.to_h)
     redirect_to edit_profile_path, notice: "Perfil atualizado com sucesso!"
   else
     render :edit

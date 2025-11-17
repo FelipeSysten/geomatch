@@ -12,6 +12,13 @@ $color-text: #1a1a1a;
 $color-accent: #ff3b5c; // detalhe vibrante
 $white: #ffffff;
 
+
+/* 
+ *= require markercluster/MarkerCluster
+ *= require markercluster/MarkerCluster.Default
+*/
+
+
 @use "discover";
 @use "public";
 @use "profile";

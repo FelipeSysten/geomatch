@@ -33,16 +33,17 @@ class UsersController < ApplicationController
  def update
   @user = current_user
   
-  # 1. Separa o avatar dos outros parâmetros
-  avatar_param = user_params[:avatar]
-  update_params = user_params.except(:avatar).to_h
+  # Obtém os parâmetros permitidos UMA ÚNICA VEZ
+  permitted_params = user_params
   
-  # 2. Tenta atualizar os outros campos
+  # Separa o avatar dos outros parâmetros
+  avatar_param = permitted_params[:avatar]
+  update_params = permitted_params.except(:avatar).to_h
+  
+  # Tenta atualizar os outros campos
   if @user.update(update_params)
-    # 3. Se a atualização for bem-sucedida e houver um novo avatar, anexa-o manualmente
-    if avatar_param.present?
-      @user.avatar.attach(avatar_param)
-    end
+    # Se a atualização for bem-sucedida e houver um novo avatar, anexa-o manualmente
+    @user.avatar.attach(avatar_param) if avatar_param.present?
     
     redirect_to edit_profile_path, notice: "Perfil atualizado com sucesso!"
   else

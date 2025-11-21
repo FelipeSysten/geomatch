@@ -28,32 +28,22 @@ class UsersController < ApplicationController
   def edit
     @user = current_user
   end
-
- def update
-  @user = current_user
   
-  begin
-    # O Rails lida com o avatar automaticamente se ele estiver nos strong parameters.
-    # O método update tentará salvar o usuário e o anexo do avatar de uma vez.
+  # Atualização de perfil
+  def update
+    @user = current_user
+
     if @user.update(user_params)
       redirect_to edit_profile_path, notice: "Perfil atualizado com sucesso."
     else
-      # Se a atualização falhar (por validação do username/bio OU do avatar)
       render :edit, status: :unprocessable_entity
     end
-  rescue ActiveStorage::IntegrityError, MiniMagick::Error => e
-    # Captura erros de processamento de imagem (ex: arquivo corrompido, formato inválido,
-    # ou falha na biblioteca de processamento).
-    Rails.logger.error "Active Storage/MiniMagick Error: #{e.message}"
-    @user.errors.add(:avatar, "não é um arquivo de imagem válido ou está corrompido.")
-    render :edit, status: :unprocessable_entity
   end
-end
 
-private
+  private
 
-def user_params
-  # Strong parameters: permite a atualização de username, bio e avatar
-  params.require(:user).permit(:username, :bio, :avatar)
-end
+  # Strong params
+  def user_params
+    params.require(:user).permit(:username, :bio, :avatar)
+  end
 end

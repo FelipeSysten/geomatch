@@ -447,7 +447,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  aws-sdk-core (>= 3.238)
   aws-sdk-s3
   bootsnap
   brakeman

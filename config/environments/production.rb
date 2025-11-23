@@ -21,7 +21,7 @@ Rails.application.configure do
   }
 
   # Active Storage (points to R2)
-  config.active_storage.service = :r2
+  config.active_storage.service = :cloudinary
 
   
   # Logging

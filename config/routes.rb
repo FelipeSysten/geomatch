@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   # Nova tela de Descoberta (Lead/Swipe)
   get "/lead", to: "users#lead", as: :lead
   post "/lead", to: "users#lead"
+  post "/lead/reject", to: "users#reject", as: :reject_user
 
   # Endpoint JSON para busca de usuários próximos
   get "/users/nearby", to: "users#nearby"

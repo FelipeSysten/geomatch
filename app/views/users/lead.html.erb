@@ -43,8 +43,8 @@
     <div class="lead-actions">
 
       <!-- Rejeitar -->
-      <%= button_to "❌",
-            lead_path,
+     <%= button_to "❌",
+            reject_user_path(user_id: @next_user.id),
             method: :post,
             class: "action-button reject-button" %>
 

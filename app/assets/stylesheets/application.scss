@@ -29,6 +29,7 @@ $white: #ffffff;
 @use "devise"; // <--- AGORA IMPORTA DEPOIS DAS VARIÁVEIS
 @use "edit_profile";
 @use "lead";
+@use "notifications";
 
 // 🧱 Layout base
 .container {

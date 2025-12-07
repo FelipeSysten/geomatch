@@ -8,5 +8,10 @@ class Match < ApplicationRecord
     current_user == user ? matched_user : user
   end
 
+   # Novo método para verificar se a conversa foi iniciada
+  def initiated_conversation?
+    messages.exists?
+  end
+
   scope :for_user, ->(user_id) { where("user_id = ? OR matched_user_id = ?", user_id, user_id) }
 end

@@ -1,44 +1,74 @@
 <div class="matches-container">
-  <div class="matches-header">
-    <h1 class="matches-title">💬 Seus Matches</h1>
-    <p class="matches-subtitle">Converse com pessoas que você curtiu</p>
-  </div>
+ 
 
-  <% if @matches.any? %>
-    <div class="matches-grid">
-      <% @matches.each do |match| %>
+  <%# ======================================================================== %>
+  <%# ATENÇÃO: As variáveis @matches_uninitiated e @matches_initiated devem ser %>
+  <%# populadas no MatchesController conforme o código que enviei anteriormente. %>
+  <%# ======================================================================== %>
+
+  <%# ======================================================================== %>
+  <%# 1. MATCHES NÃO INICIADOS (Topo, lado a lado com scroll horizontal) %>
+  <%# ======================================================================== %>
+  <% if @matches_uninitiated.present? %>
+    <h2 class="section-title">Novos Matches</h2>
+    <div class="matches-uninitiated-grid">
+      <% @matches_uninitiated.each do |match| %>
         <% other = match.other_user(current_user) %>
         
-        <div class="match-card">
-          <div class="match-card-header">
-            <% if other.avatar.attached? %>
-              <%= image_tag other.avatar, class: "match-avatar" %>
-            <% else %>
-              <div class="match-avatar-placeholder">
-                <%= other.display_name[0].upcase rescue "?" %>
-              </div>
-            <% end %>
-          </div>
-
-          <div class="match-card-body">
-            <h3 class="match-name"><%= other.display_name %></h3>
-            <p class="match-bio"><%= truncate(other.bio.presence || "Sem descrição ainda", length: 60) %></p>
-            
-            <div class="match-card-footer">
-              <%= link_to match_path(match), class: "match-chat-btn" do %>
-                <span class="chat-icon">💬</span>
-                <span class="chat-text">Abrir Chat</span>
+        <div class="match-card-uninitiated">
+          <%= link_to match_path(match) do %>
+            <div class="match-avatar-container">
+              <% if other.avatar.attached? %>
+                <%= image_tag other.avatar, class: "match-avatar" %>
+              <% else %>
+                <div class="match-avatar-placeholder">
+                  <%= other.display_name[0].upcase rescue "?" %>
+                </div>
               <% end %>
             </div>
-          </div>
+            <p class="match-name"><%= truncate(other.display_name, length: 8) %></p>
+          <% end %>
         </div>
       <% end %>
     </div>
+  <% end %>
 
-    <div class="matches-pagination">
-      <%= paginate @matches %>
+  <%# ======================================================================== %>
+  <%# 2. CONVERSAS INICIADAS (Lista abaixo) %>
+  <%# ======================================================================== %>
+  <% if @matches_initiated.present? %>
+    <h2 class="section-title">Conversas</h2>
+    <div class="matches-initiated-list">
+      <% @matches_initiated.each do |match| %>
+        <% other = match.other_user(current_user) %>
+        
+        <%= link_to match_path(match), class: "conversation-item" do %>
+          <%# Avatar %>
+          <% if other.avatar.attached? %>
+            <%= image_tag other.avatar, class: "conversation-avatar" %>
+          <% else %>
+            <div class="conversation-avatar-placeholder">
+              <%= other.display_name[0].upcase rescue "?" %>
+            </div>
+          <% end %>
+          
+          <%# Informações da Conversa %>
+          <div class="conversation-info">
+            <h3 class="conversation-name"><%= other.display_name %></h3>
+            <%# Opcional: Adicionar a última mensagem aqui se for fácil de buscar %>
+            <%# Se você tiver a última mensagem disponível, descomente o código abaixo %>
+            <p class="last-message"><%= match.messages.last.content.truncate(50) if match.messages.any? %></p> 
+            <%# <p class="last-message">Continue conversando...</p>  %>
+          </div>
+        <% end %>
+      <% end %>
     </div>
-  <% else %>
+  <% end %>
+
+  <%# ======================================================================== %>
+  <%# 3. MENSAGEM DE VAZIO (Se ambas as listas estiverem vazias) %>
+  <%# ======================================================================== %>
+  <% if @matches_uninitiated.blank? && @matches_initiated.blank? %>
     <div class="matches-empty">
       <div class="empty-icon">💭</div>
       <h3 class="empty-title">Você ainda não tem nenhum match</h3>

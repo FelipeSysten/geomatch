@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get "notifications/index"
+  
   # Página inicial pública
   root "public#landing"
 
@@ -26,25 +27,26 @@ Rails.application.routes.draw do
 
   # Matches e mensagens dentro do chat
   resources :matches, only: [:index, :show] do
-    resources :messages, only: [:create]
+    # ALTERADO conforme solicitado (agora inclui :index e :create)
+    resources :messages, only: [:index, :create]
   end
 
   # Autenticação (Devise)
   devise_for :users
 
-  # Usuários (exibição e atualização)
+  # Users (exibição e atualização)
   resources :users, only: [:show, :update]
 
-  # ADIÇÃO CORRIGIDA PARA A TELA "MEU PERFIL"
-  # Usa 'resource :profile' para evitar conflito com a rota /users/edit do Devise
-  # Mapeia para o UsersController
+  # Meu Perfil
   resource :profile, controller: 'users', only: [:edit, :update]
 
-
-  # Logout rápido (atalho amigável)
+  # Logout rápido
   devise_scope :user do
     delete "/logout", to: "devise/sessions#destroy", as: :logout
   end
+
+  # ActionCable (acrescentado conforme pedido)
+  mount ActionCable.server => '/cable'
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check

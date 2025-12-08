@@ -82,4 +82,8 @@ class User < ApplicationRecord
   def hobbies_list=(values)
     self.hobbies = values.reject(&:blank?).join(",")
   end
+
+   def online?
+    last_seen_at.present? && last_seen_at > 2.minutes.ago
+  end
 end

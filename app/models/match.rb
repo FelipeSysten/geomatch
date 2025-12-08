@@ -8,6 +8,10 @@ class Match < ApplicationRecord
     current_user == user ? matched_user : user
   end
 
+  def participant?(user)
+    user && (user_id == user.id || matched_user_id == user.id)
+  end
+
    # Novo método para verificar se a conversa foi iniciada
   def initiated_conversation?
     messages.exists?

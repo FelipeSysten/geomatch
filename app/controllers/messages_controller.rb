@@ -4,17 +4,23 @@ class MessagesController < ApplicationController
 
   def index
     @messages = @match.messages.order(created_at: :asc)
-    render json: @messages
+    # Apenas para garantir que o frontend tenha os dados iniciais
+    render json: @messages.map { |m| { id: m.id, content: m.content, sender_id: m.sender_id, created_at: m.created_at.iso8601 } }
   end
 
   def create
+     unless @match.participant?(current_user)
+     return head :forbidden
+     end
+    
     @message = @match.messages.build(message_params)
     @message.sender = current_user
 
     if @message.save
-      redirect_to match_path(@match)
+      # Retorna um status de sucesso.
+      head :ok
     else
-      render "matches/show", alert: "Erro ao enviar mensagem."
+      render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity
     end
   end
 

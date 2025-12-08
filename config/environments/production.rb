@@ -3,7 +3,7 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  Rails.application.routes.default_url_options[:host] = "https://geomatch-web.onrender.com"
+  Rails.application.routes.default_url_options[:host] = "https://geomatch-cvtv.onrender.com"
 
   # Code is not reloaded between requests.
   config.enable_reloading = false
@@ -53,4 +53,11 @@ Rails.application.configure do
 
   # Only show id on production logs
   config.active_record.attributes_for_inspect = [:id]
+
+    # ActionCable (WebSockets)
+  config.action_cable.url = ENV["CABLE_URL"]
+  config.action_cable.allowed_request_origins = [
+    "https://geomatch-cvtv.onrender.com",
+    %r{https://geomatch-cvtv\.onrender\.com/*}
+  ]
 end

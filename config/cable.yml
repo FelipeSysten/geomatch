@@ -5,6 +5,7 @@ test:
   adapter: test
 
 production:
-  adapter: redis
+  adapter: solid_cable
   url: <%= ENV["REDIS_URL"] %>
-  channel_prefix: geomatch_production
+  polling_interval: 0.1.seconds
+  message_retention: 1.day

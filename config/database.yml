@@ -23,21 +23,29 @@ production:
     encoding: unicode
     pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
     url: <%= ENV["DATABASE_URL"] %>
+    # LINHA ADICIONADA
+    schema_search_path: public
 
   cache:
     adapter: postgresql
     encoding: unicode
     pool: 5
     url: <%= ENV["DATABASE_URL"] %>
+    # LINHA ADICIONADA
+    schema_search_path: public
 
   queue:
     adapter: postgresql
     encoding: unicode
     pool: 5
     url: <%= ENV["DATABASE_URL"] %>
+    # LINHA ADICIONADA
+    schema_search_path: public
 
   cable:
     adapter: postgresql
     encoding: unicode
     pool: 5
     url: <%= ENV["DATABASE_URL"] %>
+    # LINHA ADICIONADA
+    schema_search_path: public

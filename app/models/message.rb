@@ -9,7 +9,7 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-    Rails.logger.error "BROADCAST_DEBUG: sender=#{sender&.id}, avatar=#{sender&.avatar_url.inspect}"
+    Rails.logger.info "BROADCAST_DEBUG: id=#{id}, sender=#{sender_id}, avatar=#{sender.avatar_url.inspect}"
 
     MatchChannel.broadcast_to(match, {
       message: {

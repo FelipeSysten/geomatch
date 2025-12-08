@@ -1,4 +1,7 @@
 class Message < ApplicationRecord
+
+  self.primary_key = 'id' 
+  
   belongs_to :match
   belongs_to :sender, class_name: "User"
 

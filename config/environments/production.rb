@@ -1,68 +1,99 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
+  # --------------------------
+  # URL padrão da aplicação
+  # --------------------------
   Rails.application.routes.default_url_options[:host] = "https://geomatch-cvtv.onrender.com"
 
-  # Code is not reloaded between requests.
+  # --------------------------
+  # Performance e carregamento
+  # --------------------------
   config.enable_reloading = false
-
-  # Eager load code on boot for better performance.
   config.eager_load = true
-
-  # Full error reports are disabled.
   config.consider_all_requests_local = false
 
-  # Caching
+  # --------------------------
+  # Cache
+  # --------------------------
   config.action_controller.perform_caching = true
   config.public_file_server.headers = {
     "cache-control" => "public, max-age=#{1.year.to_i}"
   }
 
-  # Active Storage (points to R2)
+  # --------------------------
+  # Active Storage (Cloudinary)
+  # --------------------------
   config.active_storage.service = :cloudinary
 
-  
+  # --------------------------
   # Logging
+  # --------------------------
   config.log_tags = [:request_id]
-  config.logger = ActiveSupport::TaggedLogging.logger(STDOUT)
-  config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
+  config.log_level = :debug
 
+  logger = Logger.new(STDOUT)
+  config.logger = logger
+  config.action_controller.logger = logger
+  config.active_record.logger = logger
+
+  # --------------------------
   # Healthcheck
+  # --------------------------
   config.silence_healthcheck_path = "/up"
 
-  # No deprecations
+  # --------------------------
+  # Deprecations
+  # --------------------------
   config.active_support.report_deprecations = false
 
+  # --------------------------
   # Cache store
+  # --------------------------
   config.cache_store = :solid_cache_store
 
-  # Active Job
+  # --------------------------
+  # Active Job / Solid Queue
+  # --------------------------
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
+  # --------------------------
   # Mailer
-  config.action_mailer.default_url_options = { host: "example.com" }
+  # --------------------------
+  config.action_mailer.default_url_options = { host: "geomatch-cvtv.onrender.com" }
 
-  # I18n fallbacks
+  # --------------------------
+  # I18n fallback
+  # --------------------------
   config.i18n.fallbacks = true
 
-  # Schema dump
+  # --------------------------
+  # Schema
+  # --------------------------
   config.active_record.dump_schema_after_migration = false
 
-  # Only show id on production logs
+  # --------------------------
+  # Logging minimal attributes
+  # --------------------------
   config.active_record.attributes_for_inspect = [:id]
 
-    # ActionCable (WebSockets)
-  config.action_cable.url = ENV["CABLE_URL"]
+  # =======================================================
+  # ACTION CABLE — Solid Cable + Render (configuração fixa)
+  # =======================================================
+
+  # URL usada pelo frontend
+  config.action_cable.url = ENV["CABLE_URL"] || "wss://geomatch-cvtv.onrender.com/cable"
+
+  # Aceita conexões apenas do domínio da aplicação
   config.action_cable.allowed_request_origins = [
     "https://geomatch-cvtv.onrender.com",
-    %r{https://geomatch-cvtv\.onrender\.com/*}
+    %r{https://geomatch-cvtv\.onrender\.com/?}
   ]
 
-  config.log_level = :debug
-config.logger = Logger.new(STDOUT)
-config.action_controller.logger = Logger.new(STDOUT)
-config.active_record.logger = Logger.new(STDOUT)
+  # Caminho onde o cable está montado
+  config.action_cable.mount_path = "/cable"
+
+  # Força HTTPS para não quebrar o WebSocket
+  config.force_ssl = true
 end

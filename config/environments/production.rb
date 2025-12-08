@@ -60,4 +60,9 @@ Rails.application.configure do
     "https://geomatch-cvtv.onrender.com",
     %r{https://geomatch-cvtv\.onrender\.com/*}
   ]
+
+  config.log_level = :debug
+config.logger = Logger.new(STDOUT)
+config.action_controller.logger = Logger.new(STDOUT)
+config.active_record.logger = Logger.new(STDOUT)
 end

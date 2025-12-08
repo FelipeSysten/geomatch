@@ -6,6 +6,9 @@ class Message < ApplicationRecord
 
   after_create_commit :broadcast_message
 
+  Rails.logger.error "BROADCAST_DEBUG: sender=#{sender&.id}, avatar=#{sender&.avatar_url.inspect}"
+
+
   private
 
 def broadcast_message

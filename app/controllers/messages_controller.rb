@@ -2,6 +2,9 @@ class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_match
 
+  Rails.logger.error "MSG_DEBUG: match=#{@match&.id}, user=#{current_user&.id}, params=#{params.inspect}"
+
+
   def index
     @messages = @match.messages.order(created_at: :asc)
     # Apenas para garantir que o frontend tenha os dados iniciais

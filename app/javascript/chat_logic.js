@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     messageInput.value = "";
     matchChannel.sendTypingStatus(false);
 
-    // envia para backend
+   // envia para backend
     fetch(newMessageForm.action, {
       method: "POST",
       headers: {
@@ -115,9 +115,22 @@ document.addEventListener('DOMContentLoaded', () => {
         "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').content,
       },
       body: JSON.stringify({ message: { content } }),
-    }).catch(() => markMessageFailed(tempId));
+    })
+    .then(async (response) => {
+      if (!response.ok) {
+        // Se der erro 500 ou 400, forçamos o erro para cair no catch
+        const text = await response.text(); 
+        console.error("Erro do servidor:", text); // VAI MOSTRAR O ERRO NO CONSOLE
+        throw new Error("Erro na resposta do servidor");
+      }
+      return response; // Se não retornar JSON, pode ser response.text() ou apenas response
+    })
+    .catch((error) => {
+      console.error(error);
+      markMessageFailed(tempId);
+    });
   });
-
+  
   // =======================================================
   //   SUBSTITUI TEMP OU INSERE NOVA
   // =======================================================

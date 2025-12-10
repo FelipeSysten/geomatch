@@ -4,7 +4,7 @@ class Message < ApplicationRecord
 
   validates :content, presence: true
 
-  after_create :broadcast_message
+  after_create_commit :broadcast_message
 
   private
 

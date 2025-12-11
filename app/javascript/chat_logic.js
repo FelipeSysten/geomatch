@@ -1,4 +1,3 @@
-chat_logic.js
 import consumer from "./channels/consumer";
 
 document.addEventListener('DOMContentLoaded', () => {

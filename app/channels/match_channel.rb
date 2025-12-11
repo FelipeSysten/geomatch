@@ -25,8 +25,8 @@ end
     MatchChannel.broadcast_to(@match.to_gid_param, {
       typing: !!data['typing'],
       user_id: user.id,
-      user_name: user.display_name,
-      user_avatar: user.avatar_url # opcional
+      user_name: user.display_name || "Usuário",
+      user_avatar: user.avatar_url
     })
   end
 end

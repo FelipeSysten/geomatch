@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
           : ""
         }
         <div class="bubble">
-          <div class="meta">
+           <div class="meta">
             ${message.sender_id !== currentUserId ? `<strong class="name">${message.user_name || ""}</strong>` : ""}
             <small class="time">${new Date(message.created_at).toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"})}</small>
           </div>

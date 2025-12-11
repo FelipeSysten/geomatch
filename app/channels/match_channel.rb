@@ -1,13 +1,17 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
-    @match = Match.find_by(id: params[:match_id])
-    user = connection.current_user
-    # rejeita se não existir match ou se user não for participante
-    reject unless @match && user && @match.participant?(user)
-
-    # use stream_for para ficar alinhado com broadcast_to
-    stream_for @match.to_gid_param
+  @match = Match.find_by(id: params[:match_id])
+  user = connection.current_user
+  
+  # rejeita se não existir match ou se user não for participante
+  unless @match && user && @match.participant?(user)
+    reject
+    return # <--- INTERROMPE A EXECUÇÃO DO MÉTODO
   end
+
+  # use stream_for para ficar alinhado com broadcast_to
+  stream_for @match.to_gid_param
+end
 
   def unsubscribed
     # cleanup se necessário

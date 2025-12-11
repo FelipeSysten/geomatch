@@ -13,7 +13,7 @@ class Message < ApplicationRecord
     Rails.logger.info "BROADCAST_DEBUG: id=#{id}, sender=#{sender_id}, avatar=#{sender.avatar_url.inspect}"
 
     # CORRETO: Use o objeto GID para o broadcast.
-    ActionCable.server.broadcast(match.to_gid_param, {
+       ActionCable.server.broadcast("match:#{match.to_gid_param}", {
       message: {
         id: id,
         content: content,

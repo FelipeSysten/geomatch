@@ -2,6 +2,8 @@ class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_match
 
+  wrap_parameters format: [] 
+
   def index
     Rails.logger.error "MSG_DEBUG index: match=#{@match&.id}, user=#{current_user&.id}, params=#{params.inspect}"
 

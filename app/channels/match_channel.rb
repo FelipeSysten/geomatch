@@ -18,7 +18,7 @@ class MatchChannel < ApplicationCable::Channel
     user = connection.current_user
     return unless @match && user && @match.participant?(user)
 
-    MatchChannel.broadcast_to(@match, {
+    MatchChannel.broadcast_to(@match.to_gid_param, {
       typing: !!data['typing'],
       user_id: user.id,
       user_name: user.display_name,

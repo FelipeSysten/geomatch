@@ -11,7 +11,7 @@ class Message < ApplicationRecord
   def broadcast_message
     Rails.logger.info "BROADCAST_DEBUG: id=#{id}, sender=#{sender_id}, avatar=#{sender.avatar_url.inspect}"
 
-    MatchChannel.broadcast_to(match, {
+    MatchChannel.broadcast_to(match.to_gid_param, {
       message: {
         id: id,
         content: content,

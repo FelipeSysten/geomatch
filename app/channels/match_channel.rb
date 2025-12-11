@@ -6,7 +6,7 @@ class MatchChannel < ApplicationCable::Channel
     reject unless @match && user && @match.participant?(user)
 
     # use stream_for para ficar alinhado com broadcast_to
-    stream_for @match
+    stream_for @match.to_gid_param
   end
 
   def unsubscribed

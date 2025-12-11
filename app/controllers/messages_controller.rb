@@ -28,7 +28,7 @@ class MessagesController < ApplicationController
     @message.sender = current_user
 
     if @message.save
-      head :ok
+      render json: @message.as_json(only: [:id, :content, :sender_id, :created_at])
     else
       render json: { errors: @message.errors.full_messages }, status: :unprocessable_entity
     end

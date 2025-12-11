@@ -1,3 +1,4 @@
+chat_logic.js
 import consumer from "./channels/consumer";
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -41,7 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
         //     MENSAGEM RECEBIDA
         // -------------------------
         if (data.message) {
-          replaceOrAppend(data.message);
+          // A mensagem real (com ID do banco de dados) chega via ActionCable.
+          // O remetente também recebe o broadcast.
+          appendMessageToDOM(data.message);
         }
       },
 
@@ -93,16 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const content = messageInput.value.trim();
     if (!content) return;
 
-    // cria mensagem temporária
-    const tempId = `temp-${Date.now()}`;
-
-    appendMessageToDOM({
-      id: tempId,
-      content,
-      sender_id: currentUserId,
-      created_at: new Date().toISOString(),
-      sending: true
-    });
+    // Não cria mensagem temporária. O ActionCable fará o broadcast para todos,
+    // incluindo o remetente, que irá adicionar a mensagem real ao DOM.
 
     messageInput.value = "";
     matchChannel.sendTypingStatus(false);
@@ -123,31 +118,20 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Erro do servidor:", text); // VAI MOSTRAR O ERRO NO CONSOLE
         throw new Error("Erro na resposta do servidor");
       }
-      return response; // Se não retornar JSON, pode ser response.text() ou apenas response
+      // Não precisamos processar o JSON aqui, pois o broadcast do ActionCable
+      // já irá adicionar a mensagem ao DOM.
+      return response;
     })
     .catch((error) => {
       console.error(error);
-      markMessageFailed(tempId);
+      // Não há mais tempId para marcar como falha, pois a mensagem só é
+      // adicionada via ActionCable. Se falhar, não aparece.
+      // Opcionalmente, você pode adicionar uma notificação de erro aqui.
     });
   });
   
-  // =======================================================
-  //   SUBSTITUI TEMP OU INSERE NOVA
-  // =======================================================
-  function replaceOrAppend(message) {
-    // encontra mensagem temporária correspondente
-    const temp = document.querySelector(
-      `.message[data-sending="true"][data-content="${CSS.escape(message.content)}"]`
-    );
-
-    if (temp) {
-      temp.id = `msg-${message.id}`;
-      temp.dataset.sending = "false";
-      return;
-    }
-
-    appendMessageToDOM(message);
-  }
+  // Função replaceOrAppend removida, pois a mensagem é adicionada
+  // diretamente via ActionCable. O remetente também recebe o broadcast.
 
   // =======================================================
   //   APPEND NO DOM
@@ -160,8 +144,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     el.className = `message ${message.sender_id === currentUserId ? "sent" : "received"}`;
     el.id = `msg-${message.id}`;
-    el.dataset.sending = message.sending ? "true" : "false";
-    el.dataset.content = message.content;
+    // Não há mais necessidade de data-sending e data-content, pois a mensagem
+    // só é adicionada ao DOM quando o ActionCable a envia.
+    // el.dataset.sending = message.sending ? "true" : "false";
+    // el.dataset.content = message.content;
 
     el.innerHTML = `
       <div class="message-inner">
@@ -196,8 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }[c]));
   }
 
-  function markMessageFailed(id) {
-    const el = document.getElementById(id);
-    if (el) el.classList.add("failed");
-  }
+  // Função markMessageFailed removida, pois a mensagem só é adicionada
+  // ao DOM via ActionCable após o sucesso no servidor.
+  // function markMessageFailed(id) {
+  //   const el = document.getElementById(id);
+  //   if (el) el.classList.add("failed");
+  // }
 });

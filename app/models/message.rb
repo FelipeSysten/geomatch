@@ -1,4 +1,5 @@
 class Message < ApplicationRecord  
+  include GlobalID::Identification
   belongs_to :match
   belongs_to :sender, class_name: "User"
 

@@ -22,7 +22,10 @@ end
     user = connection.current_user
     return unless @match && user && @match.participant?(user)
 
-    MatchChannel.broadcast_to(@match.to_gid_param, {
+    # Mude MatchChannel.broadcast_to(@match.to_gid_param, ...) para ActionCable.server.broadcast(stream_name, ...)
+    stream_name = "match:#{@match.to_gid_param}" # O nome do stream que você está usando
+    
+    ActionCable.server.broadcast(stream_name, {
       typing: !!data['typing'],
       user_id: user.id,
       user_name: user.display_name || "Usuário",

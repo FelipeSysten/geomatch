@@ -7,13 +7,13 @@ class Message < ApplicationRecord
 
   after_create_commit :broadcast_message
 
-  private
+   private
 
   def broadcast_message
     Rails.logger.info "BROADCAST_DEBUG: id=#{id}, sender=#{sender_id}, avatar=#{sender.avatar_url.inspect}"
 
-   stream_name = "match:#{match.to_gid_param}" # Cria a string do canal
-    ActionCable.server.broadcast(stream_name, {
+    # CORRETO: Use o objeto GID para o broadcast.
+    ActionCable.server.broadcast(match.to_gid_param, {
       message: {
         id: id,
         content: content,

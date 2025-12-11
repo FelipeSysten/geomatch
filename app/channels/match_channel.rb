@@ -1,17 +1,16 @@
 class MatchChannel < ApplicationCable::Channel
   def subscribed
-  @match = Match.find_by(id: params[:match_id])
-  user = connection.current_user
-  
-  # rejeita se não existir match ou se user não for participante
-  unless @match && user && @match.participant?(user)
-    reject
-    return # <--- INTERROMPE A EXECUÇÃO DO MÉTODO
-  end
+    @match = Match.find_by(id: params[:match_id])
+    user = connection.current_user
+    
+    unless @match && user && @match.participant?(user)
+      reject
+      return
+    end
 
-  # use stream_for para ficar alinhado com broadcast_to
-  stream_for @match.to_gid_param
-end
+    # CORRETO: Mantém o stream_for para escutar o canal
+    stream_for @match.to_gid_param
+  end
 
   def unsubscribed
     # cleanup se necessário
@@ -22,10 +21,10 @@ end
     user = connection.current_user
     return unless @match && user && @match.participant?(user)
 
-    # Mude MatchChannel.broadcast_to(@match.to_gid_param, ...) para ActionCable.server.broadcast(stream_name, ...)
-    stream_name = "match:#{@match.to_gid_param}" # O nome do stream que você está usando
-    
-    ActionCable.server.broadcast(stream_name, {
+    # CORRETO: Use o objeto GID para o broadcast.
+    # O ActionCable/SolidCable deve ser capaz de resolver isso,
+    # e é a forma correta de se alinhar com o `stream_for`.
+    ActionCable.server.broadcast(@match.to_gid_param, {
       typing: !!data['typing'],
       user_id: user.id,
       user_name: user.display_name || "Usuário",

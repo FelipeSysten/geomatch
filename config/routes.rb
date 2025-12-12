@@ -25,6 +25,10 @@ Rails.application.routes.draw do
   # Likes (curtidas)
   resources :likes, only: [:create, :destroy]
 
+   # Adiciona a rota para o perfil público (show)
+  # Isso cria a rota GET /users/:id que será mapeada para UsersController#show
+  resources :users, only: [:show]
+
   # Matches e mensagens dentro do chat
   resources :matches, only: [:index, :show] do
     # ALTERADO conforme solicitado (agora inclui :index e :create)

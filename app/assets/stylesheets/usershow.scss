@@ -1,0 +1,26 @@
+/* Estilos para o Perfil Público */
+
+.profile-static-text {
+  /* Estilo para o texto estático, para diferenciá-lo do input */
+  font-size: 1rem;
+  font-weight: 600; /* Semi-bold */
+  color: #333; /* Cor escura para destaque */
+  margin-top: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee; /* Linha sutil para separar */
+}
+
+.hobby-tag {
+  /* Estilo para exibir os hobbies como tags */
+  display: inline-block;
+  background-color: #e0f7fa; /* Cor de fundo clara (ex: azul claro) */
+  color: #006064; /* Cor do texto escura */
+  padding: 5px 10px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  border-radius: 20px;
+  font-size: 0.875rem; /* Tamanho de fonte menor */
+  font-weight: 500;
+}
+
+/* Reutilize os estilos .photo-album-grid, .album-photo-item, etc., que definimos antes. */

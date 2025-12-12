@@ -7,6 +7,19 @@ class UsersController < ApplicationController
     @nearby_users = DiscoveryService.new(current_user).find_nearby_users
   end
 
+   # Perfil Público
+  def show
+    # Busca o usuário pelo ID passado na URL (params[:id])
+    @user = User.find(params[:id])
+
+    # Se você quiser que apenas usuários logados vejam perfis:
+    # before_action :authenticate_user! já deve estar no topo da classe.
+
+  rescue ActiveRecord::RecordNotFound
+    # Trata o caso de um ID inválido ou usuário inexistente
+    redirect_to discover_path, alert: "Usuário não encontrado."
+  end
+
   # Nova tela de Descoberta (Lead/Swipe)
   def lead
     # 🚨 1. CASO SEJA POPUP DE MATCH

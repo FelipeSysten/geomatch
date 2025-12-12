@@ -1,13 +1,19 @@
 <div class="chat-container">
 
+    <% @other_user = @match.other_user(current_user) %>
+
   <div class="chat-header">
-    <img src="<%= @match.other_user(current_user).avatar_url || '/assets/avatarfoto.jpg' %>"
-         class="avatar" style="width:42px;height:42px;border-radius:50%;">
+    <%# 1. Envolve a imagem com o link %>
+    <%= link_to user_path(@other_user) do %>
+      <img src="<%= @other_user.avatar_url || '/assets/avatarfoto.jpg' %>"
+           class="avatar" style="width:42px;height:42px;border-radius:50%;">
+    <% end %>
 
     <div class="title">
-      <%= @match.other_user(current_user).display_name %>
+      <%# 2. Envolve o nome com o link %>
+      <%= link_to @other_user.display_name, user_path(@other_user) %>
       <div class="status">
-        <% if @match.other_user(current_user).online? %>
+        <% if @other_user.online? %>
           🟢 Online
         <% else %>
           ⚪ Offline

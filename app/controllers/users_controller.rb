@@ -63,7 +63,20 @@ class UsersController < ApplicationController
   def update
     @user = current_user
 
-    if @user.update(user_params)
+    # 1. Lida com o upload de novas fotos separadamente
+    # Se o parâmetro album_photos estiver presente, anexa as novas fotos ao álbum.
+    if params[:user][:album_photos].present?
+      @user.album_photos.attach(params[:user][:album_photos])
+    end
+
+    # 2. Prepara os parâmetros para o update do restante do usuário
+    # Remove o parâmetro album_photos para evitar que o Rails tente
+    # processá-lo novamente no update, o que pode causar erros ou
+    # comportamento inesperado (como tentar substituir em vez de adicionar).
+    user_update_params = user_params.except(:album_photos)
+
+    # 3. Atualiza o restante dos atributos do usuário
+    if @user.update(user_update_params)
       redirect_to edit_profile_path, notice: "Perfil atualizado com sucesso!"
     else
       render :edit, status: :unprocessable_entity
@@ -73,6 +86,7 @@ class UsersController < ApplicationController
   private
 
   def user_params
+    # O parâmetro album_photos: [] já está correto para permitir o array de arquivos
     params.require(:user).permit(
       :avatar,
       :username,
@@ -81,7 +95,8 @@ class UsersController < ApplicationController
       :gender,
       :share_location,
       :interested_in,
-      hobbies_list: [] # RECEBE ARRAY
+      { hobbies_list: [] }, # RECEBE ARRAY
+      album_photos: []      # <--- CORRETO: Permite o array de arquivos
     )
   end
 end

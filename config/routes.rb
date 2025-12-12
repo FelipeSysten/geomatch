@@ -50,4 +50,8 @@ Rails.application.routes.draw do
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
+
+   # Rota para exclusão de foto do álbum
+  delete 'album_photos/:id', to: 'album_photos#destroy', as: :delete_album_photo
+  
 end

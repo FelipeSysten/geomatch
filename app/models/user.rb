@@ -6,6 +6,11 @@ class User < ApplicationRecord
   # Avatar (Active Storage)
   has_one_attached :avatar
 
+   # ==========================
+  #  NOVO: ÁLBUM DE FOTOS
+  # ==========================
+  has_many_attached :album_photos 
+
   # Geocoder (para localização)
   geocoded_by :address
   after_validation :geocode, if: ->(obj) { obj.address.present? && obj.will_save_change_to_address? }

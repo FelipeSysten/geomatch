@@ -50,6 +50,14 @@
           <%= f.text_area :bio, rows: 3, class: "profile-textarea" %>
         </div>
 
+          <!-- NOVO: Campo de Upload para o Álbum de Fotos -->
+        <div class="profile-field" style="grid-column: 1 / -1; margin-top: 20px;">
+          <%= f.label :album_photos, "Adicionar Fotos ao Álbum" %>
+          <%= f.file_field :album_photos, multiple: true, accept: "image/*", class: "profile-input" %>
+          <p class="text-sm text-gray-500 mt-1">Você pode selecionar várias fotos de uma vez.</p>
+        </div>
+
+
         <!-- HOBBIES -->
         <div class="hobbies-box">
           <%= f.label :hobbies_list, "Hobbys" %>
@@ -66,6 +74,7 @@
 
       </div> <!-- /profile-grid -->
 
+
       <%= f.submit "Salvar Alterações", class: "profile-submit" %>
       <%= link_to "Editar Senha", edit_user_registration_path,
           class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
@@ -73,6 +82,21 @@
     <% end %>
 
   </div> <!-- /profile-card -->
+  
+<div class="photo-album-grid">
+      <% @user.album_photos.each do |photo| %>
+        <div class="album-photo-item">
+          <%= image_tag photo, class: "album-photo-image" %>
+
+          <%# O link de exclusão usa o Turbo/Rails para enviar um DELETE separado %>
+          <%= link_to "X", delete_album_photo_path(photo),
+              data: { turbo_method: :delete, turbo_confirm: "Tem certeza que deseja excluir esta foto?" },
+              class: "delete-photo-button" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
 </div>
 
 <script>

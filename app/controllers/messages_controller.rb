@@ -2,11 +2,9 @@ class MessagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_match
 
-  wrap_parameters format: [] 
+  wrap_parameters format: []
 
   def index
-    Rails.logger.error "MSG_DEBUG index: match=#{@match&.id}, user=#{current_user&.id}, params=#{params.inspect}"
-
     @messages = @match.messages.order(created_at: :asc)
 
     render json: @messages.map { |m|
@@ -20,8 +18,6 @@ class MessagesController < ApplicationController
   end
 
   def create
-    Rails.logger.error "MSG_DEBUG create: match=#{@match&.id}, user=#{current_user&.id}, params=#{params.inspect}"
-
     unless @match.participant?(current_user)
       return head :forbidden
     end

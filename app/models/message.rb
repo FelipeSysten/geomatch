@@ -1,5 +1,6 @@
 class Message < ApplicationRecord  
   include GlobalID::Identification
+
   belongs_to :match
   belongs_to :sender, class_name: "User"
 
@@ -7,13 +8,10 @@ class Message < ApplicationRecord
 
   after_create_commit :broadcast_message
 
-   private
+  private
 
   def broadcast_message
-    Rails.logger.info "BROADCAST_DEBUG: id=#{id}, sender=#{sender_id}, avatar=#{sender.avatar_url.inspect}"
-
-    # CORRETO: Use o objeto GID para o broadcast.
-       ActionCable.server.broadcast("match:#{match.to_gid_param}", {
+    payload = {
       message: {
         id: id,
         content: content,
@@ -22,6 +20,9 @@ class Message < ApplicationRecord
         user_name: sender.display_name || "Usuário",
         avatar_url: sender.avatar_url || "/assets/avatarfoto.jpg"
       }
-    })
+    }
+
+    # BROADCAST CORRETO
+    MatchChannel.broadcast_to(match, payload)
   end
 end

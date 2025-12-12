@@ -1,6 +1,21 @@
+# config/routes.rb
+
 Rails.application.routes.draw do
+  # =================================================================
+  # 1. AUTENTICAÇÃO (DEVISE) - MOVIDO PARA O TOPO PARA EVITAR CONFLITOS
+  # =================================================================
+  devise_for :users
+
+  # Logout rápido (mantido aqui, logo após o Devise)
+  devise_scope :user do
+    delete "/logout", to: "devise/sessions#destroy", as: :logout
+  end
+
+  # =================================================================
+  # 2. ROTAS PÚBLICAS E GERAIS
+  # =================================================================
   get "notifications/index"
-  
+
   # Página inicial pública
   root "public#landing"
 
@@ -21,41 +36,39 @@ Rails.application.routes.draw do
   get "/users/nearby", to: "users#nearby"
 
   resources :notifications, only: [:index]
-  
+
   # Likes (curtidas)
   resources :likes, only: [:create, :destroy]
 
-   # Adiciona a rota para o perfil público (show)
-  # Isso cria a rota GET /users/:id que será mapeada para UsersController#show
-  resources :users, only: [:show]
-
   # Matches e mensagens dentro do chat
   resources :matches, only: [:index, :show] do
-    # ALTERADO conforme solicitado (agora inclui :index e :create)
     resources :messages, only: [:index, :create]
   end
 
-  # Autenticação (Devise)
-  devise_for :users
+  # =================================================================
+  # 3. ROTAS DE USUÁRIOS (CONSOLIDADAS)
+  # =================================================================
 
   # Users (exibição e atualização)
+  # CONSOLIDADO: O 'show' e 'update' estavam separados, agora estão juntos.
+  # O 'show' é o perfil público.
   resources :users, only: [:show, :update]
 
-  # Meu Perfil
+  # Meu Perfil (Rota customizada para edição do usuário logado)
+  # O 'resource' cria as rotas /profile/edit e PATCH /profile
   resource :profile, controller: 'users', only: [:edit, :update]
 
-  # Logout rápido
-  devise_scope :user do
-    delete "/logout", to: "devise/sessions#destroy", as: :logout
-  end
+  # Rota para exclusão de foto do álbum
+  delete 'album_photos/:id', to: 'album_photos#destroy', as: :delete_album_photo
 
-  # ActionCable (acrescentado conforme pedido)
+  # =================================================================
+  # 4. OUTRAS ROTAS
+  # =================================================================
+
+  # ActionCable
   mount ActionCable.server => '/cable'
 
   # Health check
   get "up" => "rails/health#show", as: :rails_health_check
 
-   # Rota para exclusão de foto do álbum
-  delete 'album_photos/:id', to: 'album_photos#destroy', as: :delete_album_photo
-  
 end

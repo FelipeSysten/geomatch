@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   # =================================================================
   # 2. ROTAS PÚBLICAS E GERAIS
   # =================================================================
+  # Rotas para Stories
+  resources :stories, only: [:index, :create]
+  
   get "notifications/index"
 
   # Página inicial pública
@@ -57,6 +60,18 @@ Rails.application.routes.draw do
   # Meu Perfil (Rota customizada para edição do usuário logado)
   # O 'resource' cria as rotas /profile/edit e PATCH /profile
   resource :profile, controller: 'users', only: [:edit, :update]
+
+  
+
+ # Rotas para Usuários (Atualização de Localização e Descoberta)
+  resources :users, only: [] do
+    collection do
+      # Endpoint para o frontend atualizar a localização do usuário logado
+      post :update_location
+      # Endpoint para buscar usuários próximos (já deve existir)
+      get :nearby
+    end
+  end
 
   # Rota para exclusão de foto do álbum
   delete 'album_photos/:id', to: 'album_photos#destroy', as: :delete_album_photo

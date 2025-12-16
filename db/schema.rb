@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_12_041614) do
+ActiveRecord::Schema[8.1].define(version: 2025_12_16_164615) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -277,6 +277,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_041614) do
     t.index ["key"], name: "index_solid_queue_semaphores_on_key", unique: true
   end
 
+  create_table "stories", force: :cascade do |t|
+    t.text "caption"
+    t.datetime "created_at", null: false
+    t.float "latitude"
+    t.float "longitude"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["latitude", "longitude"], name: "index_stories_on_latitude_and_longitude"
+    t.index ["user_id"], name: "index_stories_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "address"
     t.text "bio"
@@ -297,6 +308,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_041614) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["latitude", "longitude"], name: "index_users_on_latitude_and_longitude"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
   end
@@ -319,4 +331,5 @@ ActiveRecord::Schema[8.1].define(version: 2025_12_12_041614) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "stories", "users"
 end

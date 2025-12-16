@@ -6,21 +6,110 @@
 @import "leaflet.markercluster/dist/MarkerCluster.css";
 @import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
+// Variáveis
+$primary-color: #d4af37;
+$secondary-color: #121212;
+$accent-color: #ff3b5c;
+$light-bg: #f8f2e7;
+$white: #ffffff;
+$text-dark: #333333;
+$text-light: #666666;
+$border-color: #e0e0e0;
+
 // Container principal da página do mapa
 .map-page-container {
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  background: #f8f2e7; // Cor de fundo do projeto (bege claro)
+  background: $light-bg;
+  position: relative;
+  gap: 1.5rem;
 }
 
 #map {
   width: 100%;
-  height: 60vh; // Altura ajustada para caber em telas menores
+  height: 60vh;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
+}
+
+.map-container {
+  width: 100%;
+  height: 60vh;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid $border-color;
+  position: relative;
+}
+
+// ================================
+// Radar Visual
+// ================================
+.radar-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  pointer-events: none;
+  z-index: 100;
+
+  &.hidden {
+    display: none;
+  }
+}
+
+.radar-circle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba($primary-color, 0.3);
+  border-radius: 50%;
+  animation: radarPulse 3s infinite;
+
+  &.radar-circle-1 {
+    width: 60px;
+    height: 60px;
+    animation-delay: 0s;
+  }
+
+  &.radar-circle-2 {
+    width: 100px;
+    height: 100px;
+    animation-delay: 0.5s;
+  }
+
+  &.radar-circle-3 {
+    width: 140px;
+    height: 140px;
+    animation-delay: 1s;
+  }
+}
+
+.radar-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: $primary-color;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba($primary-color, 0.8);
+}
+
+@keyframes radarPulse {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 // ================================
@@ -36,7 +125,7 @@
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  border: 3px solid #d4af37; // Cor primária do projeto (dourado)
+  border: 3px solid $primary-color;
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
@@ -48,26 +137,111 @@
   }
 }
 
+// Marcador do usuário atual
+.user-marker {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-location-marker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-location-dot {
+  width: 12px;
+  height: 12px;
+  background: $primary-color;
+  border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 0 0 3px $primary-color;
+  z-index: 10;
+}
+
+.user-location-pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid $primary-color;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
 // ================================
 // Sidebar de Usuários Próximos
 // ================================
 .nearby-users {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  padding: 15px;
-  font-family: 'Poppins', sans-serif;
+  background: $white;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 1.5rem;
+  font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   z-index: 999;
   max-height: 400px;
   overflow-y: auto;
+  border: 1px solid $border-color;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: $primary-color;
+    border-radius: 10px;
+
+    &:hover {
+      background: darken($primary-color, 10%);
+    }
+  }
 }
 
-.nearby-users h4 {
-  text-align: center;
-  margin-bottom: 12px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #121212; // Cor escura
+.nearby-users-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid $border-color;
+
+  h4 {
+    text-align: center;
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: $secondary-color;
+    flex: 1;
+  }
+
+  .nearby-count {
+    background: $primary-color;
+    color: $white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
 }
 
 .nearby-users ul {
@@ -76,35 +250,61 @@
   padding: 0;
 }
 
-.nearby-users li {
+.user-list-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  padding: 8px;
-  border-radius: 8px;
-  transition: background 0.2s;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 12px;
+  transition: background 0.2s ease, border-color 0.2s ease;
   cursor: pointer;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
 
   &:hover {
     background: #f8f8f8;
-    border-color: #d4af37; // Cor primária
+    border-color: $primary-color;
   }
-}
 
-.nearby-users img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #d4af37; // Cor primária
+  .avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid $primary-color;
+    flex-shrink: 0;
+  }
+
+  .user-list-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .user-list-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: $text-dark;
+  }
+
+  .user-list-distance {
+    font-size: 0.8rem;
+    color: $text-light;
+  }
 }
 
 .nearby-users span {
   font-size: 14px;
   font-weight: 500;
   color: #333;
+}
+
+.loading-text {
+  text-align: center;
+  color: $text-light;
+  font-size: 0.9rem;
+  padding: 1rem;
 }
 
 // ================================
@@ -115,96 +315,184 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #ffffff;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-  padding: 20px;
-  transition: transform 0.3s ease-out;
+  background: $white;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(100%);
   z-index: 1000;
+  max-width: 100%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+
+  &.show {
+    transform: translateY(0);
+  }
+
+  &.hidden {
+    display: none;
+  }
+}
+
+.popup-content {
+  position: relative;
   max-width: 500px;
   margin: 0 auto;
 }
 
-.user-popup.show {
-  transform: translateY(0);
+.close-popup-btn {
+  position: absolute;
+  top: -2rem;
+  right: 0;
+  background: $white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-dark;
+  transition: background 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background: $light-bg;
+  }
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }
 
 .user-info {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid $border-color;
 }
 
 .avatar {
-  width: 70px;
-  height: 70px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  border: 4px solid #d4af37; // Cor primária
+  border: 4px solid $primary-color;
   object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .user-details {
+  flex: 1;
+
   h3 {
-    margin: 0;
+    margin: 0 0 0.5rem 0;
     font-size: 1.5rem;
-    color: #121212;
+    color: $secondary-color;
+    font-weight: 700;
   }
+
   p {
-    margin: 2px 0;
-    font-size: 0.9rem;
-    color: #555;
-  }
-  .distance {
-    font-weight: 600;
-    color: #ff3b5c; // Cor de destaque (vermelho/rosa)
+    margin: 0.25rem 0;
+    font-size: 0.95rem;
+    color: $text-light;
+
+    &.distance {
+      font-weight: 600;
+      color: $accent-color;
+      font-size: 1rem;
+    }
   }
 }
 
 .popup-actions {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
 }
 
 .btn {
   flex: 1;
-  padding: 12px;
+  padding: 0.75rem;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
-  transition: background 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+
+  .btn-icon {
+    font-size: 1.2rem;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
-.btn.like {
-  background: #ff3b5c; // Cor de destaque (vermelho/rosa)
-  color: white;
-  &:hover { background: darken(#ff3b5c, 10%); }
+.btn-like {
+  background: linear-gradient(135deg, $accent-color, #ff1744);
+  color: $white;
+
+  &:hover {
+    background: darken($accent-color, 10%);
+  }
 }
 
-.btn.message {
-  background: #121212; // Cor escura
-  color: white;
-  &:hover { background: lighten(#121212, 10%); }
+.btn-message {
+  background: $secondary-color;
+  color: $white;
+
+  &:hover {
+    background: lighten($secondary-color, 10%);
+  }
 }
 
-.btn.go {
-  background: #d4af37; // Cor primária (dourado)
-  color: #121212;
-  &:hover { background: darken(#d4af37, 10%); }
+.btn-go {
+  background: linear-gradient(135deg, $primary-color, #c9a227);
+  color: $secondary-color;
+
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 // ================================
 // Estilo dos Clusters (MarkerCluster)
 // ================================
 .marker-cluster-small {
-  background-color: rgba(212, 175, 55, 0.4); // Cor primária com transparência
+  background-color: rgba(212, 175, 55, 0.4);
 }
+
 .marker-cluster-small div {
   background-color: rgba(212, 175, 55, 0.8);
 }
@@ -212,6 +500,7 @@
 .marker-cluster-medium {
   background-color: rgba(212, 175, 55, 0.6);
 }
+
 .marker-cluster-medium div {
   background-color: rgba(212, 175, 55, 1);
 }
@@ -219,6 +508,7 @@
 .marker-cluster-large {
   background-color: rgba(212, 175, 55, 0.8);
 }
+
 .marker-cluster-large div {
   background-color: rgba(212, 175, 55, 1);
 }
@@ -231,7 +521,7 @@
   text-align: center;
   border-radius: 15px;
   font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
-  color: #121212;
+  color: $secondary-color;
   font-weight: 700;
   line-height: 30px;
 }
@@ -242,7 +532,7 @@
 @media (min-width: 768px) {
   .map-page-container {
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 2rem;
     padding: 2rem;
   }
 
@@ -252,9 +542,50 @@
     margin-bottom: 0;
   }
 
+  .map-container {
+    flex: 3;
+    height: 80vh;
+  }
+
   .nearby-users {
     flex: 1;
-    max-width: 300px;
+    max-width: 350px;
     height: 80vh;
+    max-height: 80vh;
+  }
+
+  .btn .btn-text {
+    display: inline;
+  }
+
+  .popup-actions {
+    flex-direction: row;
+
+    .btn {
+      flex-direction: column;
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .map-page-container {
+    padding: 1rem;
+  }
+
+  #map {
+    height: 50vh;
+  }
+
+  .map-container {
+    height: 50vh;
+  }
+
+  .nearby-users {
+    max-height: 300px;
+  }
+
+  .user-popup {
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
   }
 }

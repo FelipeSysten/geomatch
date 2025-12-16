@@ -65,6 +65,7 @@ class User < ApplicationRecord
   has_many :matches_as_matched_user, class_name: 'Match', foreign_key: 'matched_user_id', dependent: :destroy
   has_many :messages, through: :matches_as_user
   has_many :notifications, foreign_key: :recipient_id, dependent: :destroy
+   has_many :stories, dependent: :destroy # Adicionar relacionamento com Stories
 
   # Matches unificados
   def matches
@@ -75,6 +76,8 @@ class User < ApplicationRecord
   def display_name
     username.presence || email&.split('@')&.first || "Usuário"
   end
+
+  
 
   # ==========================
   #  HOBBIES

@@ -18,6 +18,7 @@ class StoriesController < ApplicationController
       @stories = Story.nearby(current_lat, current_lng, 50)
                       .where('created_at >= ?', 24.hours.ago)
                       .includes(:user)
+                      .distinct
                       .order(created_at: :desc)
     else
       @stories = []

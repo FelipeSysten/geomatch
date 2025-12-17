@@ -76,7 +76,22 @@ class User < ApplicationRecord
   def display_name
     username.presence || email&.split('@')&.first || "Usuário"
   end
+  
+   def age
+    return nil unless birthdate
 
+    today = Date.current
+    age = today.year - birthdate.year
+    age -= 1 if today < birthdate + age.years
+    age
+  end
+
+  def city
+  return nil if address.blank?
+
+  # se address for string
+  address.split(",").last&.strip
+end
   
 
   # ==========================

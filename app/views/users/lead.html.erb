@@ -1,65 +1,200 @@
-<div class="container mt-5 lead-wrapper" data-controller="confetti">
+<div class="container lead-container" data-controller="lead-swipe">
 
+  <!-- MATCH POPUP -->
   <% if @match %>
-    <div class="match-popup">
-      <h2>🎉 Deu Match!</h2>
+    <div class="match-popup" data-match-popup>
+      <div class="match-popup-content">
+        <div class="match-animation">
+          <span class="match-icon">💕</span>
+        </div>
+        <h2 class="match-title">Deu Match!</h2>
+        <p class="match-subtitle">Você e <strong><%= @next_user.display_name %></strong> curtiram um ao outro!</p>
+        <p class="match-description">Deseja iniciar uma conversa agora?</p>
 
-      <p>Você e <strong><%= @next_user.display_name %></strong> curtiram um ao outro!</p>
-      <p>Deseja iniciar uma conversa agora?</p>
-
-      <div class="match-popup-actions">
-        <%= link_to "💬 Conversar Agora", match_path(@match), class: "btn btn-primary" %>
-        <%= link_to "➡ Continuar Vendo Usuários", lead_path, class: "btn btn-outline-secondary" %>
+        <div class="match-actions">
+          <%= link_to "💬 Conversar Agora", match_path(@match), class: "btn btn-match btn-primary" %>
+          <%= link_to "➡ Continuar Vendo", lead_path, class: "btn btn-match btn-secondary" %>
+        </div>
       </div>
+      <div class="match-overlay"></div>
     </div>
   <% end %>
 
-  <h1 class="text-center">Descubra Pessoas Próximas</h1>
+  <!-- HEADER -->
+  <div class="lead-header">
+    <h1 class="lead-title">Descubra Pessoas Próximas</h1>
+    <p class="lead-subtitle">Deslize para rejeitar ou curtir</p>
+  </div>
 
   <% if @next_user %>
-    <div class="lead-card">
+    <!-- LEAD CARD PRINCIPAL -->
+    <div
+  class="lead-card-wrapper"
+  data-lead-card
+  data-user-id="<%= @next_user.id %>"
+    >
+      
+      <!-- GALERIA DE FOTOS -->
+      <div class="lead-gallery">
+        <div class="gallery-container">
+          <% album_photos = @next_user.album_photos.attached? ? @next_user.album_photos : [] %>
+          <% avatar = @next_user.avatar.attached? %>
+          
+          <% if album_photos.any? || avatar %>
+            <% photos = [] %>
+            <% if avatar %>
+              <% photos << { url: rails_blob_url(@next_user.avatar), type: 'avatar' } %>
+            <% end %>
+            <% album_photos.each do |photo| %>
+              <% photos << { url: rails_blob_url(photo), type: 'album' } %>
+            <% end %>
 
-      <!-- FOTO COM FALLBACK -->
-      <%= image_tag @next_user.avatar_or_default, class: "lead-card-image" %>
+            <!-- IMAGENS DO CARROSSEL -->
+            <div class="gallery-slides" data-gallery-slides>
+              <% photos.each_with_index do |photo, index| %>
+                <div class="gallery-slide <%= 'active' if index == 0 %>" data-slide-index="<%= index %>">
+                  <img src="<%= photo[:url] %>" alt="Foto <%= index + 1 %>" class="gallery-image" loading="lazy">
+                  <div class="gallery-overlay"></div>
+                </div>
+              <% end %>
+            </div>
 
-      <div class="lead-card-info">
-        <h5 class="card-title"><%= @next_user.display_name %></h5>
+            <!-- INDICADOR DE PROGRESSO (DOTS) -->
+            <div class="gallery-indicators">
+              <% photos.each_with_index do |_, index| %>
+                <div class="indicator <%= 'active' if index == 0 %>" data-indicator-index="<%= index %>"></div>
+              <% end %>
+            </div>
 
-        <p class="card-text"><%= @next_user.bio %></p>
+            <!-- NAVEGAÇÃO DE FOTOS (SETAS) -->
+            <% if photos.length > 1 %>
+              <button class="gallery-nav gallery-prev" data-gallery-prev aria-label="Foto anterior">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+              </button>
+              <button class="gallery-nav gallery-next" data-gallery-next aria-label="Próxima foto">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+              </button>
+            <% end %>
+          <% else %>
+            <!-- FALLBACK SE NÃO HOUVER FOTOS -->
+            <div class="gallery-fallback">
+              <div class="fallback-avatar">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                  <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                  <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                </svg>
+              </div>
+              <p>Sem fotos disponíveis</p>
+            </div>
+          <% end %>
+        </div>
 
-        <% if @distance %>
-          <p class="card-text"><%= @distance %> km</p>
-        <% end %>
+        <!-- INDICADOR DE SWIPE -->
+        <div class="swipe-indicator" data-swipe-indicator>
+          <div class="swipe-left">
+            <span class="swipe-icon">❌</span>
+            <span class="swipe-text">Rejeitar</span>
+          </div>
+          <div class="swipe-right">
+            <span class="swipe-icon">❤️</span>
+            <span class="swipe-text">Curtir</span>
+          </div>
+        </div>
+      </div>
 
-        <% if @next_user.hobbies_list.any? %>
-          <p class="card-text small">
-            Hobbies: <%= @next_user.hobbies_list.join(', ') %>
+      <!-- INFORMAÇÕES DO USUÁRIO -->
+      <div class="lead-info">
+        <div class="user-header">
+          <h2 class="user-name">
+            <%= @next_user.display_name %>
+            <% if @next_user.respond_to?(:verified) && @next_user.verified %>
+              <span class="verified-badge" title="Perfil verificado">✓</span>
+            <% end %>
+          </h2>
+          <p class="user-location">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <% if @distance %>
+              <strong><%= @distance %> km</strong> de você
+            <% end %>
           </p>
+        </div>
+
+        <!-- BIO -->
+        <% if @next_user.bio.present? %>
+          <div class="user-bio">
+            <p><%= @next_user.bio %></p>
+          </div>
         <% end %>
+
+        <!-- HOBBIES -->
+        <% if @next_user.hobbies_list.any? %>
+          <div class="user-hobbies">
+            <h6 class="hobbies-title">Interesses</h6>
+            <div class="hobbies-list">
+              <% @next_user.hobbies_list.each do |hobby| %>
+                <span class="hobby-badge"><%= hobby %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+        <!-- INFORMAÇÕES ADICIONAIS -->
+        <div class="user-meta">
+          <% if @next_user.age.present? %>
+            <div class="meta-item">
+              <span class="meta-label">Idade:</span>
+              <span class="meta-value"><%= @next_user.age %> anos</span>
+            </div>
+          <% end %>
+          <% if @next_user.city.present? %>
+            <div class="meta-item">
+              <span class="meta-label">Cidade:</span>
+              <span class="meta-value"><%= @next_user.city %></span>
+            </div>
+          <% end %>
+        </div>
       </div>
     </div>
 
-    <!-- Botões de Ação -->
-    <div class="lead-actions">
+    <!-- BOTÕES DE AÇÃO (FALLBACK PARA DESKTOP) -->
+    <div class="lead-actions-desktop">
+      <%# REJEITAR: Usa button_to para garantir que o POST seja enviado corretamente %>
+      <%= button_to reject_user_path(user_id: @next_user.id), method: :post, class: "action-button reject-button", title: "Rejeitar (ou deslize para esquerda)" do %>
+        <span class="button-icon">❌</span>
+        <span class="button-text">Rejeitar</span>
+      <% end %>
 
-      <!-- Rejeitar -->
-     <%= button_to "❌",
-            reject_user_path(user_id: @next_user.id),
-            method: :post,
-            class: "action-button reject-button" %>
-
-      <!-- Curtir -->
-      <%= button_to "❤️",
-            likes_path(user_id: @next_user.id),
-            method: :post,
-            class: "action-button like-button",
-            id: "like-button" %>
-
+      <%# CURTIR: Usa button_to para garantir que o POST seja enviado corretamente %>
+      <%= button_to likes_path(user_id: @next_user.id), method: :post, class: "action-button like-button", title: "Curtir (ou deslize para direita)" do %>
+        <span class="button-icon">❤️</span>
+        <span class="button-text">Curtir</span>
+      <% end %>
     </div>
 
   <% else %>
-    <div class="alert alert-info text-center" role="alert">
-      Não há mais usuários elegíveis no momento. Tente novamente mais tarde!
+    <!-- ESTADO VAZIO -->
+    <div class="lead-empty">
+      <div class="empty-icon">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+          <line x1="9" y1="9" x2="9.01" y2="9"></line>
+          <line x1="15" y1="9" x2="15.01" y2="9"></line>
+        </svg>
+      </div>
+      <h3 class="empty-title">Sem mais usuários</h3>
+      <p class="empty-message">Não há mais usuários elegíveis no momento.</p>
+      <p class="empty-submessage">Tente novamente mais tarde ou ajuste seus filtros.</p>
+      <%= link_to "← Voltar", discover_path, class: "btn btn-outline-primary mt-3" %>
     </div>
   <% end %>
 </div>

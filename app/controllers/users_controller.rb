@@ -96,6 +96,18 @@ class UsersController < ApplicationController
     end
   end
 
+  # Ação para rejeitar um usuário (usada pela rota POST /lead/reject)
+  def reject
+    rejected_user = User.find(params[:user_id])
+
+    # Exemplo simples: apenas ignora e segue
+    # (depois você pode salvar rejeição no banco)
+    redirect_to lead_path
+  rescue ActiveRecord::RecordNotFound
+    # Se o ID do usuário não for encontrado, apenas redireciona para a próxima lead
+    redirect_to lead_path, alert: "Usuário a ser rejeitado não encontrado."
+  end
+
   private
 
   def user_params
@@ -112,4 +124,5 @@ class UsersController < ApplicationController
       album_photos: []      # <--- CORRETO: Permite o array de arquivos
     )
   end
+
 end

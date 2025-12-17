@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   post "/lead/reject", to: "users#reject", as: :reject_user
 
   # Endpoint JSON para busca de usuários próximos
+  # CORREÇÃO: Movido para esta seção para garantir que seja processado antes de resources :users,
+  # evitando que 'nearby' seja interpretado como um ID de usuário.
   get "/users/nearby", to: "users#nearby"
 
   resources :notifications, only: [:index]
@@ -69,7 +71,7 @@ Rails.application.routes.draw do
       # Endpoint para o frontend atualizar a localização do usuário logado
       post :update_location
       # Endpoint para buscar usuários próximos (já deve existir)
-      get :nearby
+      # REMOVIDO: A rota get :nearby foi movida para a Seção 2 para evitar conflito com resources :users.
     end
   end
 

@@ -106,10 +106,10 @@
             <span class="swipe-text">Curtir</span>
           </div>
         </div>
-      </div>
 
-      <!-- INFORMAÇÕES DO USUÁRIO -->
-      <div class="lead-info">
+        <!-- INFORMAÇÕES DO USUÁRIO E BOTÕES -->
+        <div class="lead-content-overlay">
+          <div class="lead-info">
         <div class="user-header">
           <h2 class="user-name">
             <%= @next_user.display_name %>
@@ -163,21 +163,23 @@
           <% end %>
         </div>
       </div>
-    </div>
 
-    <!-- BOTÕES DE AÇÃO (FALLBACK PARA DESKTOP) -->
-    <div class="lead-actions-desktop">
-      <%# REJEITAR: Usa button_to para garantir que o POST seja enviado corretamente %>
-      <%= button_to reject_user_path(user_id: @next_user.id), method: :post, class: "action-button reject-button", title: "Rejeitar (ou deslize para esquerda)" do %>
-        <span class="button-icon">❌</span>
-        <span class="button-text">Rejeitar</span>
-      <% end %>
+        <!-- BOTÕES DE AÇÃO (FALLBACK PARA DESKTOP) -->
+        <div class="lead-actions-desktop">
+        <%# REJEITAR: Usa button_to para garantir que o POST seja enviado corretamente %>
+        <%= button_to reject_user_path(user_id: @next_user.id), method: :post, class: "action-button reject-button", title: "Rejeitar (ou deslize para esquerda)" do %>
+          <span class="button-icon">❌</span>
+          <span class="button-text">Rejeitar</span>
+        <% end %>
 
-      <%# CURTIR: Usa button_to para garantir que o POST seja enviado corretamente %>
-      <%= button_to likes_path(user_id: @next_user.id), method: :post, class: "action-button like-button", title: "Curtir (ou deslize para direita)" do %>
-        <span class="button-icon">❤️</span>
-        <span class="button-text">Curtir</span>
-      <% end %>
+        <%# CURTIR: Usa button_to para garantir que o POST seja enviado corretamente %>
+        <%= button_to likes_path(user_id: @next_user.id), method: :post, class: "action-button like-button", title: "Curtir (ou deslize para direita)" do %>
+          <span class="button-icon">❤️</span>
+          <span class="button-text">Curtir</span>
+        <% end %>
+          </div>
+        </div>
+      </div>
     </div>
 
   <% else %>

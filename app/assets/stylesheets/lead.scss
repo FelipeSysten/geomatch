@@ -15,6 +15,20 @@
 }
 
 /* ========================================
+   HELPER CLASSES (CORRIGIDO)
+   ======================================== */
+
+/* Impede o comportamento padrão de arrastar imagens */
+.no-drag {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+  pointer-events: none; /* ESSENCIAL: O clique passa pela imagem e vai para o card */
+}
+
+/* ========================================
    CONTAINER & LAYOUT
    ======================================== */
 
@@ -55,7 +69,7 @@
 }
 
 /* ========================================
-   CARD WRAPPER
+   CARD WRAPPER (CORRIGIDO)
    ======================================== */
 
 .lead-card-wrapper {
@@ -67,17 +81,18 @@
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: slideUp 0.6s ease-out;
+  
+  /* Configurações críticas para o Swipe funcionar */
   touch-action: none;
   user-select: none;
   position: relative;
+  will-change: transform, opacity;
+  cursor: grab; /* Mostra a mãozinha aberta */
+  z-index: 10;
 }
 
-.lead-card-wrapper.swipe-left {
-  animation: swipeLeft 0.5s ease-out forwards;
-}
-
-.lead-card-wrapper.swipe-right {
-  animation: swipeRight 0.5s ease-out forwards;
+.lead-card-wrapper:active {
+  cursor: grabbing; /* Mostra a mãozinha fechada ao clicar */
 }
 
 /* ========================================
@@ -90,22 +105,22 @@
   flex: 1;
   overflow: hidden;
   background: #f8f9fa;
-  display: flex; /* Adicionado para que o filho ocupe 100% da altura */
-  flex-direction: column; /* Adicionado para que o filho ocupe 100% da altura */
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery-container {
   position: relative;
   width: 100%;
   flex: 1;
-  display: flex; /* Adicionado para que o filho ocupe 100% da altura */
-  flex-direction: column; /* Adicionado para que o filho ocupe 100% da altura */
+  display: flex;
+  flex-direction: column;
 }
 
 .gallery-slides {
   position: relative;
   width: 100%;
-  flex: 1; /* Faz o slides ocupar todo o espaço do .gallery-container */
+  flex: 1;
 }
 
 .gallery-slide {
@@ -117,18 +132,23 @@
   opacity: 0;
   transition: opacity 0.4s ease-in-out;
   pointer-events: none;
+  z-index: 1;
 }
 
 .gallery-slide.active {
   opacity: 1;
   pointer-events: auto;
+  z-index: 2;
+  /* Removemos cursor daqui pois está no wrapper pai agora */
 }
 
+/* CORREÇÃO CRÍTICA: A imagem não pode roubar o clique */
 .gallery-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none !important; 
 }
 
 .gallery-overlay {
@@ -138,12 +158,12 @@
   right: 0;
   height: 60%;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
-  pointer-events: none;
+  pointer-events: none !important; /* Garante que o overlay não bloqueie o swipe */
   z-index: 10;
 }
 
 /* ========================================
-   GALLERY INDICATORS (DOTS)
+   GALLERY INDICATORS (DOTS) - (CORRIGIDO)
    ======================================== */
 
 .gallery-indicators {
@@ -153,11 +173,12 @@
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  z-index: 20;
+  z-index: 100; /* Z-index alto para ficar acima de tudo */
   padding: 8px 16px;
   background: rgba(0, 0, 0, 0.3);
   border-radius: 20px;
   backdrop-filter: blur(4px);
+  pointer-events: auto !important; /* Garante que seja clicável */
 }
 
 .indicator {
@@ -178,15 +199,15 @@
 }
 
 /* ========================================
-   GALLERY NAVIGATION (ARROWS)
+   GALLERY NAVIGATION (ARROWS) - (CORRIGIDO)
    ======================================== */
 
 .gallery-nav {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 20;
-  background: rgba(0, 0, 0, 0.5);
+  z-index: 100; /* Z-index alto para garantir o clique */
+  background: rgba(0, 0, 0, 0.3);
   border: none;
   color: white;
   width: 48px;
@@ -198,10 +219,11 @@
   cursor: pointer;
   transition: var(--transition);
   backdrop-filter: blur(4px);
+  pointer-events: auto !important; /* CRÍTICO: Garante que o botão receba o clique */
 }
 
 .gallery-nav:hover {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -220,6 +242,7 @@
 .gallery-nav svg {
   width: 24px;
   height: 24px;
+  pointer-events: none; /* O clique passa pelo SVG e pega no botão */
 }
 
 /* ========================================
@@ -235,6 +258,7 @@
   justify-content: center;
   background: var(--light-color);
   color: #95a5a6;
+  pointer-events: none;
 }
 
 .fallback-avatar {
@@ -262,7 +286,7 @@
 }
 
 /* ========================================
-   SWIPE INDICATOR
+   SWIPE INDICATOR (CORRIGIDO)
    ======================================== */
 
 .swipe-indicator {
@@ -271,12 +295,14 @@
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  pointer-events: none !important; /* Nunca deve bloquear o clique */
   z-index: 25;
+  opacity: 0;
+  transition: opacity 0.2s ease-out;
 }
 
-.swipe-left,
-.swipe-right {
+.swipe-left-label,
+.swipe-right-label {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -288,19 +314,19 @@
   transition: opacity 0.2s ease-out;
 }
 
-.swipe-left {
+.swipe-left-label {
   left: 40px;
 }
 
-.swipe-right {
+.swipe-right-label {
   right: 40px;
 }
 
-.swipe-indicator.show-left .swipe-left {
+.swipe-indicator.show-left .swipe-left-label {
   opacity: 1;
 }
 
-.swipe-indicator.show-right .swipe-right {
+.swipe-indicator.show-right .swipe-right-label {
   opacity: 1;
 }
 
@@ -471,9 +497,12 @@
   padding: 20px;
   background: transparent;
   border-top: none;
+  z-index: 100;
+  position: relative;
+  pointer-events: auto !important;
 }
 
-/* Novo wrapper para o conteúdo sobreposto */
+/* Wrapper para o conteúdo sobreposto */
 .lead-content-overlay {
   position: absolute;
   bottom: 0;
@@ -483,11 +512,11 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  pointer-events: none;
+  pointer-events: none !important; /* IMPORTANTE: Deixa o swipe funcionar atrás */
 }
 
 .lead-content-overlay > * {
-  pointer-events: auto;
+  pointer-events: auto; /* Reativa cliques nos botões */
 }
 
 .action-button {
@@ -498,12 +527,12 @@
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: var(--transition);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   white-space: nowrap;
+  transition: var(--transition);
 }
 
 .button-icon {
@@ -730,42 +759,23 @@
 @keyframes swipeLeft {
   to {
     opacity: 0;
-    transform: translateX(-120%) rotateZ(-20deg);
+    transform: translateX(-150%) rotate(-30deg);
   }
 }
 
 @keyframes swipeRight {
   to {
     opacity: 0;
-    transform: translateX(120%) rotateZ(20deg);
-  }
-}
-
-@keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
+    transform: translateX(150%) rotate(30deg);
   }
 }
 
 @keyframes heartBeat {
-  0% {
-    transform: scale(0.8);
-  }
-  25% {
-    transform: scale(1.1);
-  }
-  50% {
-    transform: scale(1);
-  }
-  75% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(0.8); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+  75% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 @keyframes popIn {
@@ -780,170 +790,61 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* ========================================
    RESPONSIVE DESIGN
    ======================================== */
 
-/* Tablets e telas maiores (601px+) - Mantém botões visíveis */
 @media (min-width: 601px) {
   .lead-actions-desktop {
     display: flex;
   }
-  
   .button-text {
     display: inline;
   }
 }
 
-/* Entre 481px e 600px - Mantém botões visíveis */
 @media (min-width: 481px) and (max-width: 600px) {
-  .lead-container {
-    padding: 16px;
-  }
-
-  .lead-title {
-    font-size: 24px;
-  }
-
-  .lead-gallery {
-    min-height: 450px;
-  }
-
-  .lead-info {
-    padding: 20px;
-    gap: 16px;
-  }
-
-  .user-name {
-    font-size: 22px;
-  }
-
-  .match-popup-content {
-    padding: 30px 20px;
-  }
-
-  .match-title {
-    font-size: 28px;
-  }
-  
-  .lead-actions-desktop {
-    display: flex;
-  }
-  
-  .button-text {
-    display: inline;
-  }
+  .lead-container { padding: 16px; }
+  .lead-title { font-size: 24px; }
+  .lead-gallery { min-height: 450px; }
+  .lead-info { padding: 20px; gap: 16px; }
+  .user-name { font-size: 22px; }
+  .match-popup-content { padding: 30px 20px; }
+  .match-title { font-size: 28px; }
+  .lead-actions-desktop { display: flex; }
+  .button-text { display: inline; }
 }
 
-/* Mobile (400px a 480px) - Mantém botões visíveis */
 @media (min-width: 400px) and (max-width: 480px) {
-  .lead-container {
-    padding: 12px;
-  }
-
-  .lead-title {
-    font-size: 20px;
-  }
-
-  .lead-gallery {
-    min-height: 400px;
-  }
-
-  .lead-info {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .user-name {
-    font-size: 20px;
-  }
-
-  .hobbies-list {
-    gap: 6px;
-  }
-
-  .hobby-badge {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
-
-  .gallery-nav {
-    width: 40px;
-    height: 40px;
-  }
-
-  .gallery-nav svg {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .lead-actions-desktop {
-    display: flex;
-  }
-  
-  .button-text {
-    display: inline;
-  }
+  .lead-container { padding: 12px; }
+  .lead-title { font-size: 20px; }
+  .lead-gallery { min-height: 400px; }
+  .lead-info { padding: 16px; gap: 12px; }
+  .user-name { font-size: 20px; }
+  .hobbies-list { gap: 6px; }
+  .hobby-badge { padding: 5px 10px; font-size: 11px; }
+  .gallery-nav { width: 40px; height: 40px; }
+  .gallery-nav svg { width: 20px; height: 20px; }
+  .lead-actions-desktop { display: flex; }
+  .button-text { display: inline; }
 }
 
-/* Mobile pequeno (abaixo de 400px) - Mantém botões visíveis */
 @media (max-width: 399px) {
-  .lead-container {
-    padding: 12px;
-  }
-
-  .lead-title {
-    font-size: 20px;
-  }
-
-  .lead-gallery {
-    min-height: 400px;
-  }
-
-  .lead-info {
-    padding: 16px;
-    gap: 12px;
-  }
-
-  .user-name {
-    font-size: 20px;
-  }
-
-  .hobbies-list {
-    gap: 6px;
-  }
-
-  .hobby-badge {
-    padding: 5px 10px;
-    font-size: 11px;
-  }
-
-  .gallery-nav {
-    width: 40px;
-    height: 40px;
-  }
-
-  .gallery-nav svg {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .lead-actions-desktop {
-    display: flex;
-  }
-  
-  /* Mostra apenas ícones em telas muito pequenas */
-  .button-text {
-    display: none;
-  }
+  .lead-container { padding: 12px; }
+  .lead-title { font-size: 20px; }
+  .lead-gallery { min-height: 400px; }
+  .lead-info { padding: 16px; gap: 12px; }
+  .user-name { font-size: 20px; }
+  .hobbies-list { gap: 6px; }
+  .hobby-badge { padding: 5px 10px; font-size: 11px; }
+  .gallery-nav { width: 40px; height: 40px; }
+  .gallery-nav svg { width: 20px; height: 20px; }
+  .lead-actions-desktop { display: flex; }
+  .button-text { display: none; }
 }
 
 /* ========================================

@@ -4,6 +4,6 @@ import "./map";                // O arquivo JavaScript do mapa, se necessárioim
 import "./confetti_animation";
 import "./chat_logic";
 import "./stories";
-import "./lead";
-import "trix"
-import "@rails/actiontext"
+import "trix";
+import "@rails/actiontext";
+

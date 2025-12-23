@@ -1,6 +1,5 @@
 // --------------------------------------------------
 // Estilos para Formulários Devise (Login, Cadastro, etc.)
-// Usando valores hexadecimais para evitar problemas de carregamento de variáveis
 // --------------------------------------------------
 
 .devise-container {
@@ -9,20 +8,22 @@
   align-items: center;
   min-height: 80vh;
   padding: 2rem 1rem;
+  background-color: var(--color-background);
 }
 
 .devise-form-card {
-  background: #ffffff; /* $white */
+  background: var(--color-section-light);
   padding: 2.5rem;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(#121212, 0.1); /* $color-dark */
+  box-shadow: var(--shadow-lg);
   width: 100%;
   max-width: 400px;
   text-align: center;
+  border: 1px solid var(--color-border);
 
   h2 {
     font-size: 1.8rem;
-    color: #121212; /* $color-dark */
+    color: var(--color-text);
     margin-bottom: 1.5rem;
     font-weight: 700;
   }
@@ -35,7 +36,7 @@
       display: block;
       font-weight: 500;
       margin-bottom: 0.4rem;
-      color: #1a1a1a; /* $color-text */
+      color: var(--color-text);
       font-size: 0.95rem;
     }
 
@@ -44,14 +45,21 @@
     input[type="text"] {
       width: 100%;
       padding: 0.75rem 1rem;
-      border: 1px solid #ccc;
+      background-color: var(--color-background);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
       border-radius: 8px;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
 
+      &::placeholder {
+        color: var(--color-text-secondary);
+        opacity: 0.7;
+      }
+
       &:focus {
-        border-color: #d4af37; /* $color-primary */
-        box-shadow: 0 0 0 3px rgba(#d4af37, 0.2); /* $color-primary */
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); // Sutil brilho dourado
         outline: none;
       }
     }
@@ -66,6 +74,19 @@
       font-size: 1.1rem;
       font-weight: 600;
       border-radius: 10px;
+      background-color: var(--color-primary);
+      color: #121212; // Texto escuro no botão dourado para contraste
+      border: none;
+      cursor: pointer;
+      transition: filter 0.2s, transform 0.1s;
+
+      &:hover {
+        filter: brightness(0.9);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
     }
   }
 
@@ -73,30 +94,57 @@
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
 
     input[type="checkbox"] {
       margin-right: 0.5rem;
       width: 16px;
       height: 16px;
-      accent-color: #d4af37; /* $color-primary */
+      accent-color: var(--color-primary);
+      cursor: pointer;
     }
   }
 
   .devise-links {
     margin-top: 1.5rem;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-border);
 
     a {
       display: block;
-      color: #d4af37; /* $color-primary */
+      color: var(--color-primary);
       text-decoration: none;
       margin-bottom: 0.5rem;
       font-size: 0.9rem;
+      font-weight: 500;
 
       &:hover {
         text-decoration: underline;
+        filter: brightness(1.2);
       }
     }
+  }
+}
+
+// Ajuste para mensagens de erro do Devise
+#error_explanation {
+  background: rgba(255, 59, 92, 0.1); // Usando tom de $accent-color
+  color: var(--color-accent);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  font-size: 0.85rem;
+
+  h2 {
+    font-size: 1rem;
+    color: var(--color-accent);
+    margin-bottom: 0.5rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.2rem;
   }
 }

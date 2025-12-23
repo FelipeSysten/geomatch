@@ -3,25 +3,18 @@
 // ================================
 
 // Importa os estilos da biblioteca de clusterização
+/* * Nota: Em ambientes Rails/Webpacker, verifique se estes imports 
+ * funcionam diretamente ou se devem estar no application.scss/js 
+ */
 @import "leaflet.markercluster/dist/MarkerCluster.css";
 @import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-
-// Variáveis
-$primary-color: #d4af37;
-$secondary-color: #121212;
-$accent-color: #ff3b5c;
-$light-bg: #f8f2e7;
-$white: #ffffff;
-$text-dark: #333333;
-$text-light: #666666;
-$border-color: #e0e0e0;
 
 // Container principal da página do mapa
 .map-page-container {
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  background: $light-bg;
+  background: var(--color-background);
   position: relative;
   gap: 1.5rem;
 }
@@ -31,8 +24,10 @@ $border-color: #e0e0e0;
   height: 60vh;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
+  // Garante que o mapa não fique claro demais no modo dark se o tile for customizado
+  background: var(--color-section-gray); 
 }
 
 .map-container {
@@ -40,8 +35,8 @@ $border-color: #e0e0e0;
   height: 60vh;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border: 1px solid $border-color;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border);
   position: relative;
 }
 
@@ -68,7 +63,8 @@ $border-color: #e0e0e0;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  border: 2px solid rgba($primary-color, 0.3);
+  border: 2px solid var(--color-primary);
+  opacity: 0.5; // Ajuste para transparência usando CSS puro
   border-radius: 50%;
   animation: radarPulse 3s infinite;
 
@@ -98,17 +94,19 @@ $border-color: #e0e0e0;
   transform: translate(-50%, -50%);
   width: 12px;
   height: 12px;
-  background: $primary-color;
+  background: var(--color-primary);
   border-radius: 50%;
-  box-shadow: 0 0 8px rgba($primary-color, 0.8);
+  box-shadow: 0 0 8px var(--color-primary); // Sombra usa a cor da variável
 }
 
 @keyframes radarPulse {
   0% {
-    opacity: 1;
+    opacity: 0.8;
+    transform: translate(-50%, -50%) scale(0.8);
   }
   100% {
     opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5);
   }
 }
 
@@ -125,7 +123,7 @@ $border-color: #e0e0e0;
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  border: 3px solid $primary-color;
+  border: 3px solid var(--color-primary);
   object-fit: cover;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
@@ -134,6 +132,7 @@ $border-color: #e0e0e0;
     transform: scale(1.15);
     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
     cursor: pointer;
+    border-color: var(--color-accent); // Feedback visual extra no hover
   }
 }
 
@@ -156,10 +155,10 @@ $border-color: #e0e0e0;
 .user-location-dot {
   width: 12px;
   height: 12px;
-  background: $primary-color;
+  background: var(--color-primary);
   border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 0 0 3px $primary-color;
+  border: 3px solid var(--color-light); // Branco no light, escuro no dark
+  box-shadow: 0 0 0 3px var(--color-primary);
   z-index: 10;
 }
 
@@ -168,7 +167,7 @@ $border-color: #e0e0e0;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid $primary-color;
+  border: 2px solid var(--color-primary);
   animation: pulse 2s infinite;
 }
 
@@ -187,32 +186,32 @@ $border-color: #e0e0e0;
 // Sidebar de Usuários Próximos
 // ================================
 .nearby-users {
-  background: $white;
+  background: var(--color-section-light);
   border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
   padding: 1.5rem;
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
   z-index: 999;
   max-height: 400px;
   overflow-y: auto;
-  border: 1px solid $border-color;
+  border: 1px solid var(--color-border);
 
   &::-webkit-scrollbar {
     width: 6px;
   }
 
   &::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: var(--color-scrollbar-track);
     border-radius: 10px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: $primary-color;
+    background: var(--color-primary);
     border-radius: 10px;
 
     &:hover {
-      background: darken($primary-color, 10%);
+      background: var(--color-primary-darken-8);
     }
   }
 }
@@ -223,20 +222,20 @@ $border-color: #e0e0e0;
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid $border-color;
+  border-bottom: 2px solid var(--color-border);
 
   h4 {
     text-align: center;
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
-    color: $secondary-color;
+    color: var(--color-text);
     flex: 1;
   }
 
   .nearby-count {
-    background: $primary-color;
-    color: $white;
+    background: var(--color-primary);
+    color: #121212; // Contraste fixo para o badge dourado
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -262,8 +261,8 @@ $border-color: #e0e0e0;
   border: 2px solid transparent;
 
   &:hover {
-    background: #f8f8f8;
-    border-color: $primary-color;
+    background: var(--color-hover-bg);
+    border-color: var(--color-primary);
   }
 
   .avatar {
@@ -271,7 +270,7 @@ $border-color: #e0e0e0;
     height: 45px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid $primary-color;
+    border: 2px solid var(--color-primary);
     flex-shrink: 0;
   }
 
@@ -285,24 +284,24 @@ $border-color: #e0e0e0;
   .user-list-name {
     font-size: 0.95rem;
     font-weight: 600;
-    color: $text-dark;
+    color: var(--color-text);
   }
 
   .user-list-distance {
     font-size: 0.8rem;
-    color: $text-light;
+    color: var(--color-text-secondary);
   }
 }
 
 .nearby-users span {
   font-size: 14px;
   font-weight: 500;
-  color: #333;
+  color: var(--color-text);
 }
 
 .loading-text {
   text-align: center;
-  color: $text-light;
+  color: var(--color-text-secondary);
   font-size: 0.9rem;
   padding: 1rem;
 }
@@ -315,10 +314,10 @@ $border-color: #e0e0e0;
   bottom: 0;
   left: 0;
   right: 0;
-  background: $white;
+  background: var(--color-section-light);
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.15); // Sombra fixa para manter profundidade
   padding: 1.5rem;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform: translateY(100%);
@@ -347,7 +346,7 @@ $border-color: #e0e0e0;
   position: absolute;
   top: -2rem;
   right: 0;
-  background: $white;
+  background: var(--color-section-light);
   border: none;
   width: 40px;
   height: 40px;
@@ -356,17 +355,18 @@ $border-color: #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: $text-dark;
+  color: var(--color-text);
   transition: background 0.2s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    background: $light-bg;
+    background: var(--color-hover-bg);
   }
 
   svg {
     width: 24px;
     height: 24px;
+    fill: currentColor; // Usa a cor do texto definida no pai
   }
 }
 
@@ -376,17 +376,17 @@ $border-color: #e0e0e0;
   gap: 1.5rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid var(--color-border);
 }
 
 .avatar {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 4px solid $primary-color;
+  border: 4px solid var(--color-primary);
   object-fit: cover;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-sm);
 }
 
 .user-details {
@@ -395,18 +395,18 @@ $border-color: #e0e0e0;
   h3 {
     margin: 0 0 0.5rem 0;
     font-size: 1.5rem;
-    color: $secondary-color;
+    color: var(--color-text);
     font-weight: 700;
   }
 
   p {
     margin: 0.25rem 0;
     font-size: 0.95rem;
-    color: $text-light;
+    color: var(--color-text-secondary);
 
     &.distance {
       font-weight: 600;
-      color: $accent-color;
+      color: var(--color-accent);
       font-size: 1rem;
     }
   }
@@ -443,6 +443,7 @@ $border-color: #e0e0e0;
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    filter: brightness(0.9); // Escurece levemente no hover em qualquer tema
   }
 
   &:active {
@@ -456,30 +457,18 @@ $border-color: #e0e0e0;
 }
 
 .btn-like {
-  background: linear-gradient(135deg, $accent-color, #ff1744);
-  color: $white;
-
-  &:hover {
-    background: darken($accent-color, 10%);
-  }
+  background: var(--color-accent);
+  color: #ffffff; // Contraste fixo
 }
 
 .btn-message {
-  background: $secondary-color;
-  color: $white;
-
-  &:hover {
-    background: lighten($secondary-color, 10%);
-  }
+  background: var(--color-text); // Preto no light, branco no dark (ajustar se necessário)
+  color: var(--color-section-light); // Texto oposto ao fundo
 }
 
 .btn-go {
-  background: linear-gradient(135deg, $primary-color, #c9a227);
-  color: $secondary-color;
-
-  &:hover {
-    background: darken($primary-color, 10%);
-  }
+  background: var(--color-primary);
+  color: #121212; // Contraste fixo para o dourado
 }
 
 .hidden {
@@ -489,28 +478,41 @@ $border-color: #e0e0e0;
 // ================================
 // Estilo dos Clusters (MarkerCluster)
 // ================================
+// Nota: Clusters usam transparência. Como CSS vars não suportam rgba(var(), opacity),
+// mantemos cores fixas ou usamos variáveis com opacidade se o browser suportar color-mix,
+// mas para compatibilidade simples, usaremos a cor primária e opacity na div.
+
 .marker-cluster-small {
-  background-color: rgba(212, 175, 55, 0.4);
+  background-color: var(--color-primary); 
+  opacity: 0.6;
 }
 
 .marker-cluster-small div {
-  background-color: rgba(212, 175, 55, 0.8);
+  background-color: var(--color-primary);
+  opacity: 0.9;
+  color: #121212; // Texto fixo escuro
 }
 
 .marker-cluster-medium {
-  background-color: rgba(212, 175, 55, 0.6);
+  background-color: var(--color-primary);
+  opacity: 0.7;
 }
 
 .marker-cluster-medium div {
-  background-color: rgba(212, 175, 55, 1);
+  background-color: var(--color-primary);
+  opacity: 1;
+  color: #121212;
 }
 
 .marker-cluster-large {
-  background-color: rgba(212, 175, 55, 0.8);
+  background-color: var(--color-primary);
+  opacity: 0.8;
 }
 
 .marker-cluster-large div {
-  background-color: rgba(212, 175, 55, 1);
+  background-color: var(--color-primary);
+  opacity: 1;
+  color: #121212;
 }
 
 .marker-cluster div {
@@ -521,7 +523,7 @@ $border-color: #e0e0e0;
   text-align: center;
   border-radius: 15px;
   font: 12px "Helvetica Neue", Arial, Helvetica, sans-serif;
-  color: $secondary-color;
+  color: #121212; // Forçado escuro para contraste com o dourado
   font-weight: 700;
   line-height: 30px;
 }

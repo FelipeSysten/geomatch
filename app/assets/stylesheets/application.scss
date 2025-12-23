@@ -1,24 +1,8 @@
-
 // --------------------------------------------------
 // GeoMatch - Layout Moderno e Responsivo
 // --------------------------------------------------
 
 @use "sass:color";
-
-// 🎨 Paleta de cores <--- AGORA ESTÁ AQUI
-$color-primary: #d4af37; // dourado
-$color-background: #f8f2e7; // bege claro
-$color-dark: #121212; // preto escuro
-$color-text: #1a1a1a;
-$color-accent: #ff3b5c; // detalhe vibrante
-$white: #ffffff;
-
-
-/* 
- *= require markercluster/MarkerCluster
- *= require markercluster/MarkerCluster.Default
-*/
-
 
 @use "discover";
 @use "public";
@@ -26,11 +10,99 @@ $white: #ffffff;
 @use "map";
 @use "matches";
 @use "chat";
-@use "devise"; // <--- AGORA IMPORTA DEPOIS DAS VARIÁVEIS
+@use "devise"; 
 @use "edit_profile";
 @use "lead";
 @use "notifications";
 @use "usershow";
+
+// ==================================================
+// 2. VARIÁVEIS CSS (CUSTOM PROPERTIES) - TEMAS
+// ==================================================
+:root {
+  --color-primary: #d4af37; // dourado
+  --color-accent: #ff3b5c; // detalhe vibrante
+  --color-background: #f8f2e7; // bege claro
+  --color-dark: #121212; // preto escuro
+  --color-text: #1a1a1a;
+  --color-light: #ffffff; // branco
+  --color-text-secondary: #222; // Usado em btn-link e seções
+  
+  // Cores de Componentes Específicos (Modo Claro)
+  --color-header-bg: rgba(255, 255, 255, 0.9);
+  --color-header-shadow: rgba(0, 0, 0, 0.05);
+  --color-section-light: #ffffff;
+  --color-section-gray: #f6f6f6;
+  --color-footer-bg: #111;
+  --color-footer-text: #ddd;
+  --color-footer-text-light: #fff;
+  --color-footer-copyright: #aaa;
+  
+  /* Variáveis adicionais */
+  --color-border: #e0e0e0;
+  --color-scrollbar-track: #f1f1f1;
+  --color-hover-bg: #f8f8f8;
+  --color-border-input: #ccc;
+  --color-border-link: #eee;
+  --color-input-bg: #fafafa;
+  --color-input-bg-focus: #ffffff;
+
+  /* Variáveis para gradientes e variações de cor */
+  --color-background-lighten-3: #ffffff; 
+  --color-primary-darken-8: #c9a227; 
+  --shadow-hover: 0 10px 22px rgba(0, 0, 0, 0.14);
+  --color-accent-darken-8: #e63553; 
+  --border-radius: 20px;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.2);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --color-dark-lighten-10: #333333;
+  --shadow-primary: 0 6px 20px rgba(212, 175, 55, 0.2); /* Fallback para sombra colorida */
+}
+
+// 🌙 Modo Escuro
+.dark-mode {
+  --color-background: #121212;
+  --color-text: #f8f2e7;
+  --color-dark: #f8f2e7; // Inversão para manter legibilidade
+  --color-light: #1a1a1a;
+  --color-text-secondary: #cccccc;
+  --color-header-bg: rgba(18, 18, 18, 0.9);
+  --color-header-shadow: rgba(255, 255, 255, 0.05);
+  --color-section-light: #1a1a1a;
+  --color-section-gray: #222222;
+  --color-footer-bg: #000000;
+  --color-footer-text: #aaaaaa;
+  --color-footer-text-light: #cccccc;
+  --color-footer-copyright: #777777;
+
+  /* Variáveis adicionais */
+  --color-border: #333333;
+  --color-scrollbar-track: #222222;
+  --color-hover-bg: #2a2a2a;
+  --color-border-input: #444;
+  --color-border-link: #333;
+  --color-input-bg: #1e1e1e;
+  --color-input-bg-focus: #121212;
+
+  /* Variáveis para gradientes e variações */
+  --color-background-lighten-3: #1a1a1a; 
+  --color-primary-darken-8: #b38e24; 
+  --shadow-hover: 0 10px 22px rgba(255, 255, 255, 0.14);
+  --color-accent-darken-8: #ff5e78; 
+  --shadow-sm: 0 2px 8px rgba(255, 255, 255, 0.1);
+  --shadow-md: 0 8px 24px rgba(255, 255, 255, 0.15);
+  --shadow-lg: 0 16px 48px rgba(255, 255, 255, 0.2);
+  --color-dark-lighten-10: #444444; 
+  --shadow-primary: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* *= require markercluster/MarkerCluster
+ *= require markercluster/MarkerCluster.Default
+*/
+
+
 
 // 🧱 Layout base
 .container {
@@ -49,13 +121,11 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Poppins', sans-serif;
-  background: $color-background;
-  color: $color-text;
+  background: var(--color-background);
+  color: var(--color-text);
   line-height: 1.6;
   scroll-behavior: smooth;
 }
-
-
 
 // --------------------------------------------------
 // Hero (Topo da Landing)
@@ -66,20 +136,20 @@ html, body {
   justify-content: space-between;
   gap: 60px;
   padding: 80px 8%;
-  background: linear-gradient(180deg, lighten($color-background, 3%) 0%, $color-background 100%);
+  background: linear-gradient(180deg, var(--color-background-lighten-3) 0%, var(--color-background) 100%);
 
   .hero-content {
     flex: 1;
     h1 {
       font-size: 3rem;
       font-weight: 700;
-      color: $color-dark;
+      color: var(--color-dark);
       margin-bottom: 16px;
     }
 
     p {
       font-size: 1.2rem;
-      color: rgba($color-dark, 0.8);
+      color: var(--color-text-secondary);
       margin-bottom: 32px;
     }
 
@@ -90,33 +160,33 @@ html, body {
     }
 
     .btn-primary {
-      background: $color-primary;
-      color: $color-dark;
+      background: var(--color-primary);
+      color: var(--color-dark); /* Mantém contraste no botão */
       font-weight: 700;
       padding: 14px 28px;
       border-radius: 12px;
       border: none;
-      box-shadow: 0 6px 20px rgba($color-primary, 0.2);
+      box-shadow: var(--shadow-primary);
       transition: all 0.2s ease;
 
       &:hover {
-        background: #111($color-primary, 8%);
+        background: var(--color-primary-darken-8);
         transform: translateY(-2px);
       }
     }
 
     .btn-social {
-      background: $white;
-      border: 1px solid rgba($color-dark, 0.1);
+      background: var(--color-section-light);
+      border: 1px solid var(--color-border);
       padding: 12px 20px;
       border-radius: 8px;
-      color: $color-dark;
+      color: var(--color-text);
       font-weight: 500;
       flex: 1;
       text-align: center;
 
       &:hover {
-        background: rgba($color-primary, 0.1);
+        background: var(--color-hover-bg); // Substituído rgba($color-primary, 0.1) por hover-bg genérico
       }
     }
   }
@@ -130,7 +200,7 @@ html, body {
       width: 100%;
       max-width: 400px;
       border-radius: 20px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-md);
     }
   }
 
@@ -160,16 +230,16 @@ html, body {
 .section {
   padding: 80px 10%;
   text-align: center;
-  background: $color-background;
+  background: var(--color-background);
 
   h2 {
-    color: $color-primary;
+    color: var(--color-primary);
     font-size: 2rem;
     margin-bottom: 1rem;
   }
 
   p {
-    color: rgba($color-dark, 0.8);
+    color: var(--color-text-secondary);
     max-width: 600px;
     margin: 0 auto 2rem;
   }
@@ -177,16 +247,16 @@ html, body {
   .btn-outline {
     display: inline-block;
     padding: 12px 28px;
-    border: 2px solid $color-primary;
+    border: 2px solid var(--color-primary);
     border-radius: 10px;
-    color: $color-dark;
+    color: var(--color-text);
     font-weight: 600;
     text-decoration: none;
     transition: 0.2s;
 
     &:hover {
-      background: $color-primary;
-      color: $color-dark;
+      background: var(--color-primary);
+      color: #121212; /* Fixo para contraste com dourado */
     }
   }
 
@@ -196,22 +266,20 @@ html, body {
   }
 }
 
-
-
 // --------------------------------------------------
 // Conteúdo Principal
 // --------------------------------------------------
 .site-content {
-  min-height: calc(100vh - 100px); /* Ajuste conforme a altura do header e footer */
-  padding-top: 0; /* O header é sticky, então não precisa de padding aqui */
+  min-height: calc(100vh - 100px); 
+  padding-top: 0; 
 }
 
 // --------------------------------------------------
 // Rodapé
 // --------------------------------------------------
 .site-footer {
-  background-color: #111; // Cor base do rodapé
-  color: #ddd;
+  background-color: var(--color-footer-bg);
+  color: var(--color-footer-text);
   font-family: "Poppins", sans-serif;
   padding: 3rem 1rem 1.5rem;
   font-size: 0.95rem;
@@ -226,7 +294,7 @@ html, body {
     text-align: center;
     margin-bottom: 2rem;
     font-weight: 500;
-    color: #fff;
+    color: var(--color-footer-text-light);
   }
 
   .footer-links {
@@ -237,7 +305,7 @@ html, body {
 
     .footer-column {
       h4 {
-        color: #d4af37;
+        color: var(--color-primary);
         font-size: 1.1rem;
         margin-bottom: 1rem;
       }
@@ -251,12 +319,12 @@ html, body {
           margin-bottom: 0.5rem;
 
           a {
-            color: #ddd;
+            color: var(--color-footer-text);
             text-decoration: none;
             transition: color 0.2s;
 
             &:hover {
-              color: #d4af37;
+              color: var(--color-primary);
             }
           }
         }
@@ -275,7 +343,7 @@ html, body {
   }
 
   .footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid var(--color-border);
     padding-top: 1.5rem;
     text-align: center;
 
@@ -299,7 +367,7 @@ html, body {
 
     .copyright {
       font-size: 0.85rem;
-      color: #aaa;
+      color: var(--color-footer-copyright);
     }
   }
 
@@ -331,18 +399,17 @@ html, body {
   }
 }
 
-
 // --------------------------------------------------
 // HEADER - GEO MATCH
 // --------------------------------------------------
 
 .site-header {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--color-header-bg);
   backdrop-filter: blur(8px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
-  z-index: 1000; /* <-- AUMENTADO PARA GARANTIR QUE FIQUE POR CIMA */
+  z-index: 1000; 
   width: 100%;
 
   .header-inner {
@@ -386,38 +453,38 @@ html, body {
       cursor: pointer;
 
       &.btn-link {
-        color: #222;
+        color: var(--color-text-secondary);
         padding: 0.5rem 0.8rem;
         border: none;
         background: transparent;
 
         &:hover {
-          color: #d4af37;
+          color: var(--color-primary);
         }
       }
 
       &.btn-outline {
-        border: 2px solid #d4af37;
-        color: #222;
+        border: 2px solid var(--color-primary);
+        color: var(--color-text);
         background: transparent;
         padding: 0.5rem 1rem;
 
         &:hover {
-          background: #d4af37;
-          color: #121212;
-          box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+          background: var(--color-primary);
+          color: #121212; /* Mantido escuro para contraste no dourado */
+          box-shadow: var(--shadow-primary);
         }
       }
 
       &.btn-primary {
-        background: #d4af37;
+        background: var(--color-primary);
         color: #121212;
         border: none;
         padding: 0.5rem 1.2rem;
-        box-shadow: 0 3px 10px rgba(212, 175, 55, 0.25);
+        box-shadow: var(--shadow-primary);
 
         &:hover {
-          background: darken(#d4af37, 8%);
+          background: var(--color-primary-darken-8);
           transform: translateY(-2px);
         }
       }
@@ -452,13 +519,13 @@ html, body {
   padding: 5rem 1.5rem;
 
   &.section-light {
-    background: #ffffff;
-    color: #222;
+    background: var(--color-section-light);
+    color: var(--color-text-secondary);
   }
 
   &.section-gold {
-    background: #d4af37;
-    color: #121212;
+    background: var(--color-primary);
+    color: #121212; /* Fixo para garantir contraste sobre o dourado */
 
     h2, p {
       color: #121212;
@@ -470,14 +537,14 @@ html, body {
 
       &:hover {
         background: #121212;
-        color: #d4af37;
+        color: var(--color-primary);
       }
     }
   }
 
   &.section-gray {
-    background: #f6f6f6;
-    color: #222;
+    background: var(--color-section-gray);
+    color: var(--color-text-secondary);
   }
 
   .container {
@@ -525,7 +592,7 @@ html, body {
 
     .highlight {
       font-weight: 600;
-      color: #d4af37;
+      color: var(--color-primary);
     }
 
     .btn {
@@ -543,7 +610,7 @@ html, body {
       height: 380px;
       object-fit: cover;
       border-radius: 20px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      box-shadow: var(--shadow-md);
       transition: transform 0.3s ease;
 
       &:hover {
@@ -560,24 +627,11 @@ html, body {
 
 
 .site-footer {
-  background-color: #111; // Cor base do rodapé
-  color: #ddd;
-  font-family: "Poppins", sans-serif;
-  padding: 3rem 1rem 1.5rem;
-  font-size: 0.95rem;
-  line-height: 1.6;
-
-  .footer-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .footer-top {
-    text-align: center;
-    margin-bottom: 2rem;
-    font-weight: 500;
-    color: #fff;
-  }
+  // Já definido acima, mas mantendo a estrutura original
+  background-color: var(--color-footer-bg);
+  color: var(--color-footer-text);
+  
+  // ... (Estilos internos já cobertos pela seção anterior .site-footer)
 
   .footer-links {
     display: grid;
@@ -588,29 +642,22 @@ html, body {
 
   .footer-column {
     h4 {
-      color: #fff;
+      color: var(--color-footer-text-light);
       font-size: 1rem;
       margin-bottom: 0.8rem;
       font-weight: 600;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--color-border);
       padding-bottom: 0.3rem;
     }
 
     ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-
       li {
         margin: 0.4rem 0;
 
         a {
-          color: #ccc;
-          text-decoration: none;
-          transition: color 0.2s ease;
-
+          color: var(--color-footer-text);
           &:hover {
-            color: #fff;
+            color: var(--color-footer-text-light);
           }
         }
       }
@@ -634,7 +681,7 @@ html, body {
   }
 
   .footer-bottom {
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--color-border);
     padding-top: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -667,7 +714,7 @@ html, body {
     }
 
     .copyright {
-      color: #aaa;
+      color: var(--color-footer-copyright);
       font-size: 0.85rem;
       margin-top: 0.5rem;
     }
@@ -709,19 +756,19 @@ html, body {
 .profile-container {
   max-width: 700px;
   margin: 4rem auto;
-  background: #fff;
+  background: var(--color-section-light);
   border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   padding: 3rem 2.5rem;
   text-align: center;
   font-family: "Poppins", sans-serif;
-  color: #121212;
+  color: var(--color-text);
 
   h1 {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 2rem;
-    color: #d4af37;
+    color: var(--color-primary);
   }
 
   form {
@@ -733,7 +780,7 @@ html, body {
       display: block;
       text-align: left;
       font-weight: 600;
-      color: #222;
+      color: var(--color-text);
       margin-bottom: 0.4rem;
     }
 
@@ -741,16 +788,17 @@ html, body {
     textarea {
       width: 100%;
       padding: 0.8rem 1rem;
-      border: 1.5px solid #ddd;
+      border: 1.5px solid var(--color-border-input);
       border-radius: 10px;
       font-size: 1rem;
       transition: all 0.2s ease-in-out;
-      background: #fafafa;
+      background: var(--color-input-bg);
+      color: var(--color-text);
 
       &:focus {
-        border-color: #d4af37;
-        background: #fff;
-        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        border-color: var(--color-primary);
+        background: var(--color-input-bg-focus);
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15); /* Pode ser ajustado para var(--shadow-sm) se desejar */
         outline: none;
       }
     }
@@ -766,7 +814,7 @@ html, body {
     }
 
     .btn-save {
-      background: #d4af37;
+      background: var(--color-primary);
       color: #121212;
       font-weight: 700;
       padding: 0.9rem 1.6rem;
@@ -775,10 +823,10 @@ html, body {
       transition: all 0.2s ease-in-out;
       cursor: pointer;
       font-size: 1rem;
-      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.25);
+      box-shadow: var(--shadow-primary);
 
       &:hover {
-        background: darken(#d4af37, 8%);
+        background: var(--color-primary-darken-8);
         transform: translateY(-2px);
       }
     }
@@ -797,9 +845,9 @@ html, body {
       height: 130px;
       border-radius: 50%;
       overflow: hidden;
-      border: 4px solid rgba(212, 175, 55, 0.7);
-      background: #f4f4f4;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      border: 4px solid rgba(212, 175, 55, 0.7); // Mantido RGB para alpha, ou usar variação opaca se necessário
+      background: var(--color-hover-bg);
+      box-shadow: var(--shadow-sm);
       position: relative;
 
       img {
@@ -818,8 +866,8 @@ html, body {
     }
 
     .btn-upload {
-      background: #121212;
-      color: #fff;
+      background: var(--color-dark);
+      color: var(--color-section-light);
       padding: 0.6rem 1.2rem;
       border-radius: 10px;
       font-weight: 600;
@@ -827,9 +875,9 @@ html, body {
       transition: all 0.2s ease;
 
       &:hover {
-        background: #d4af37;
+        background: var(--color-primary);
         color: #121212;
-        box-shadow: 0 0 12px rgba(212, 175, 55, 0.4);
+        box-shadow: var(--shadow-primary);
       }
     }
 
@@ -840,9 +888,9 @@ html, body {
 
   // Alerta de erro
   #error_explanation {
-    background: rgba(255, 59, 92, 0.1);
+    background: rgba(255, 59, 92, 0.1); // Pode ser refatorado para var(--chat-failed-bg) se desejar
     border: 1.5px solid rgba(255, 59, 92, 0.4);
-    color: #ff3b5c;
+    color: var(--color-accent);
     padding: 1rem;
     border-radius: 10px;
     text-align: left;
@@ -880,10 +928,10 @@ html, body {
 
 
 .match-popup {
-  background: white;
+  background: var(--color-section-light);
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  box-shadow: var(--shadow-md);
   text-align: center;
   margin-bottom: 20px;
   animation: fadeIn 0.4s ease-out;
@@ -908,13 +956,13 @@ html, body {
 .authenticated-layout {
   display: flex;
   min-height: 100vh;
-  background-color: $color-background;
+  background-color: var(--color-background);
 }
 
 .sidebar {
-  width: 80px; /* Largura padrão da sidebar */
-  background-color: $color-primary; /* Cor de fundo dourada */
-  color: $color-dark;
+  width: 80px; 
+  background-color: var(--color-primary); 
+  color: var(--color-dark); /* Atenção: No modo dark, isso será bege/claro sobre dourado. */
   padding: 1rem 0;
   display: flex;
   flex-direction: column;
@@ -949,7 +997,7 @@ html, body {
       display: flex;
       align-items: center;
       padding: 0.8rem 1rem;
-      color: $color-dark;
+      color: var(--color-dark);
       text-decoration: none;
       font-weight: 600;
       transition: background-color 0.2s ease, color 0.2s ease;
@@ -958,7 +1006,7 @@ html, body {
 
       i {
         font-size: 1.5rem;
-        width: 40px; /* Garante que o ícone tenha espaço fixo */
+        width: 40px; 
         text-align: center;
       }
 
@@ -969,8 +1017,8 @@ html, body {
       }
 
       &:hover {
-        background-color: rgba($color-dark, 0.1);
-        color: $white;
+        background-color: rgba(0, 0, 0, 0.1); /* Fallback simples para hover */
+        color: var(--color-section-light);
       }
     }
   }
@@ -986,8 +1034,8 @@ html, body {
       position: absolute;
       top: 5px;
       right: 5px;
-      background-color: $color-accent;
-      color: $white;
+      background-color: var(--color-accent);
+      color: var(--color-section-light);
       border-radius: 50%;
       padding: 2px 6px;
       font-size: 0.7rem;
@@ -1002,22 +1050,22 @@ html, body {
 
 .site-content {
   flex-grow: 1;
-  padding: 2rem; /* Adiciona um padding geral ao conteúdo */
-  background-color: $color-background;
+  padding: 2rem; 
+  background-color: var(--color-background);
 }
 
 /* Ajuste para telas menores (mobile) */
 @media (max-width: 768px) {
   .authenticated-layout {
-    flex-direction: column; /* ✅ REINTRODUZIDO: Necessário para largura total do .site-content */
-    padding-bottom: 70px; /* ✅ CORREÇÃO: Adiciona espaço para a barra fixa */
+    flex-direction: column; 
+    padding-bottom: 70px; 
   }
 
   .sidebar {
     width: 100%;
     height: auto;
-    min-height: 0; /* ✅ NOVO: Garante que não haja altura mínima indesejada */
-    max-height: 70px; /* ✅ NOVO: Limita a altura máxima para a barra inferior */
+    min-height: 0; 
+    max-height: 70px; 
     flex-direction: row;
     justify-content: space-around;
     padding: 0.5rem 0;
@@ -1025,8 +1073,8 @@ html, body {
     bottom: 0;
     z-index: 1000;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    background-color: $white;
-    color: $color-primary;
+    background-color: var(--color-section-light);
+    color: var(--color-primary);
 
     &:hover {
       width: 100%;
@@ -1045,7 +1093,7 @@ html, body {
         padding: 0.5rem;
         flex-direction: column;
         text-align: center;
-        color: $color-primary;
+        color: var(--color-primary);
 
         i {
           width: auto;
@@ -1064,13 +1112,13 @@ html, body {
   .site-content {
     flex-grow: 1;
     padding: 1rem;
-    margin-bottom: 0; /* ✅ CORRIGIDO: Removido, pois o padding-bottom do pai faz o trabalho */
+    margin-bottom: 0; 
     padding-top: 1rem; 
     min-height: calc(100vh - 70px);
-    background-color: $color-background;
+    background-color: var(--color-background);
     width: 100%;
     overflow-y: auto;
-    position: relative; /* ✅ NOVO: Cria um novo contexto de empilhamento */
-    z-index: 1; /* ✅ NOVO: Garante que o conteúdo fique acima da sidebar */
+    position: relative; 
+    z-index: 1; 
   }
 }

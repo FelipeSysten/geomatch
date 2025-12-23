@@ -43,6 +43,13 @@
         <span class="nav-text">Meu Perfil</span>
       <% end %>
 
+      <!-- Botão de Alternância de Tema (Modo Escuro/Claro) -->
+      <button id="theme-toggle" class="nav-item theme-toggle-btn" title="Alternar Modo Escuro/Claro">
+        <!-- O ícone será atualizado pelo JavaScript para mostrar o sol ou a lua -->
+        <i class="fas fa-moon"></i> 
+        <span class="nav-text">Modo Escuro</span>
+      </button>
+
       <!-- Link para Sair -->
       <%= button_to destroy_user_session_path, method: :delete, class: "nav-item logout-btn", data: { turbo_confirm: "Deseja realmente sair?" } do %>
         <i class="fas fa-sign-out-alt"></i> <!-- Ícone de Sair -->

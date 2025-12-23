@@ -6,4 +6,5 @@ import "./chat_logic";
 import "./stories";
 import "trix";
 import "@rails/actiontext";
+import "./dark_mode_toggle";
 

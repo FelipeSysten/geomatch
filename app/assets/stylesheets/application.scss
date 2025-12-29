@@ -21,12 +21,12 @@
 // ==================================================
 :root {
   --color-primary: #d4af37; // dourado
-  --color-accent: #ff3b5c; // detalhe vibrante
+  --color-accent: #96600f; // detalhe vibrante
   --color-background: #f8f2e7; // bege claro
   --color-dark: #121212; // preto escuro
-  --color-text: #1a1a1a;
-  --color-light: #ffffff; // branco
-  --color-text-secondary: #222; // Usado em btn-link e seções
+  --color-text: #222121;
+  --color-light: #e7e3e3; // branco
+  --color-text-secondary: #2e2e2e; // Usado em btn-link e seções
   
   // Cores de Componentes Específicos (Modo Claro)
   --color-header-bg: rgba(255, 255, 255, 0.9);
@@ -51,7 +51,7 @@
   --color-background-lighten-3: #ffffff; 
   --color-primary-darken-8: #c9a227; 
   --shadow-hover: 0 10px 22px rgba(0, 0, 0, 0.14);
-  --color-accent-darken-8: #e63553; 
+  --color-accent-darken-8: #ad8518; 
   --border-radius: 20px;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.15);
@@ -90,7 +90,7 @@
   --color-background-lighten-3: #1a1a1a; 
   --color-primary-darken-8: #b38e24; 
   --shadow-hover: 0 10px 22px rgba(255, 255, 255, 0.14);
-  --color-accent-darken-8: #ff5e78; 
+  --color-accent-darken-8: #8d762a; 
   --shadow-sm: 0 2px 8px rgba(255, 255, 255, 0.1);
   --shadow-md: 0 8px 24px rgba(255, 255, 255, 0.15);
   --shadow-lg: 0 16px 48px rgba(255, 255, 255, 0.2);

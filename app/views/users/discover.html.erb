@@ -1,152 +1,242 @@
 <!-- ========================================
-     SEÇÃO DE TÍTULO E DESCRIÇÃO
+     LAYOUT DE TELA CHEIA COM MAPA FUNDO
      ======================================== -->
-<div class="discover-header">
-  <div class="header-content">
-    <h1 class="discover-title">Descubra pessoas próximas</h1>
-    <p class="discover-subtitle">Encontre pessoas incríveis ao seu redor e compartilhe momentos</p>
-  </div>
-</div>
 
-<!-- ========================================
-     SEÇÃO DE STORIES POR LOCALIZAÇÃO
-     ======================================== -->
-<div class="stories-section">
-  <div class="stories-container">
-    <div class="stories-header">
-      <h3 class="stories-title">📍 Stories da Região</h3>
-      <button id="add-story-btn" class="add-story-btn" title="Adicionar Story">
-        <span class="add-story-icon">+</span>
-      </button>
-    </div>
+<div class="discover-fullscreen-container">
+  
+  <!-- MAPA PRINCIPAL (Fundo de tela cheia) -->
+  <div id="map" class="map-fullscreen"></div>
 
-    <!-- Stories Carousel -->
-    <div class="stories-carousel" id="stories-carousel">
-      <!-- Stories serão carregadas dinamicamente aqui -->
-      <div class="story-skeleton">
-        <div class="story-skeleton-avatar"></div>
-        <div class="story-skeleton-text"></div>
-      </div>
-      <div class="story-skeleton">
-        <div class="story-skeleton-avatar"></div>
-        <div class="story-skeleton-text"></div>
-      </div>
-      <div class="story-skeleton">
-        <div class="story-skeleton-avatar"></div>
-        <div class="story-skeleton-text"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ========================================
-     SEÇÃO DE MAPA COM RADAR
-     ======================================== -->
-<div class="map-page-container">
-  <!-- Radar Visual (Overlay no Mapa) -->
-  <div id="radar-overlay" class="radar-overlay hidden">
-    <div class="radar-circle radar-circle-1"></div>
-    <div class="radar-circle radar-circle-2"></div>
-    <div class="radar-circle radar-circle-3"></div>
-    <div class="radar-dot"></div>
-  </div>
-
-  <!-- Mapa Principal -->
-  <div id="map" class="map-container"></div>
-
-  <!-- Sidebar dinâmica de usuários próximos -->
-  <div id="nearby-users" class="nearby-users">
-    <div class="nearby-users-header">
-      <h4>👥 Usuários próximos</h4>
-      <span class="nearby-count" id="nearby-count">0</span>
-    </div>
-    <ul id="users-list">
-      <li class="text-center loading-text">Carregando usuários...</li>
-    </ul>
-  </div>
-</div>
-
-<!-- ========================================
-     POPUP DO USUÁRIO (BOTTOM SHEET)
-     ======================================== -->
-<div id="user-popup" class="user-popup hidden">
-  <div class="popup-content">
-    <!-- Botão de Fechar -->
-    <button id="close-popup-btn" class="close-popup-btn" aria-label="Fechar">
+  <!-- ========================================
+       HEADER FLUTUANTE (Topo)
+       ======================================== -->
+  <div class="discover-header-floating">
+    <button class="header-back-btn" aria-label="Voltar">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
       </svg>
     </button>
-
-    <!-- Informações do Usuário -->
-    <div class="user-info">
-      <img id="popup-avatar" src="" alt="Avatar" class="avatar">
-      <div class="user-details">
-        <h3 id="popup-username"></h3>
-        <p id="popup-location"></p>
-        <p id="popup-distance" class="distance"></p>
-      </div>
+    
+    <div class="header-title">
+      <h2 id="header-location">Minha Localização</h2>
+      <p id="header-distance-info">Carregando...</p>
     </div>
 
-    <!-- Ações -->
-    <div class="popup-actions">
-      <button id="like-btn" class="btn btn-like">
-        <span class="btn-icon">❤️</span>
-        <span class="btn-text">Curtir</span>
-      </button>
-      <button id="message-btn" class="btn btn-message">
-        <span class="btn-icon">💬</span>
-        <span class="btn-text">Mensagem</span>
-      </button>
-      <button id="goto-btn" class="btn btn-go">
-        <span class="btn-icon">📍</span>
-        <span class="btn-text">Ir até</span>
-      </button>
+    <button class="header-settings-btn" aria-label="Configurações">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="1"></circle>
+        <circle cx="19" cy="12" r="1"></circle>
+        <circle cx="5" cy="12" r="1"></circle>
+      </svg>
+    </button>
+  </div>
+
+  <!-- ========================================
+       CONTROLE DE RADAR (Lado esquerdo flutuante)
+       ======================================== -->
+  <div class="radar-control-floating">
+    <div class="radar-control-header">
+      <span class="radar-label">Alcance</span>
+      <span class="radar-value" id="range-value-floating">50</span>
+      <span class="radar-unit">km</span>
+    </div>
+    
+    <input type="range" id="radar-range" min="1" max="2000" value="50" step="1" class="range-slider-vertical">
+    
+    <div class="radar-control-footer">
+      <span class="radar-min">1 km</span>
+      <span class="radar-max">2000 km</span>
     </div>
   </div>
-</div>
 
-<!-- ========================================
-     MODAL PARA ADICIONAR STORY
-     ======================================== -->
-<div id="add-story-modal" class="modal hidden">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Adicionar Story</h2>
-      <button id="close-modal-btn" class="close-modal-btn" aria-label="Fechar">
+  <!-- ========================================
+       BOTTOM SHEET - LISTA DE USUÁRIOS
+       ======================================== -->
+  <div class="users-bottom-sheet">
+    
+    <!-- Handle (Barra de arraste) -->
+    <div class="bottom-sheet-handle">
+      <div class="handle-bar"></div>
+    </div>
+
+    <!-- Conteúdo do Bottom Sheet -->
+    <div class="bottom-sheet-content">
+      
+      <!-- Header da Lista -->
+      <div class="bottom-sheet-header">
+        <h3>👥 Usuários Próximos</h3>
+        <span class="nearby-count" id="nearby-count">0</span>
+      </div>
+
+      <!-- Lista de Usuários -->
+      <ul id="users-list" class="users-list-fullscreen">
+        <li class="text-center loading-text">Carregando usuários...</li>
+      </ul>
+
+      <!-- Footer com contador -->
+      <div class="bottom-sheet-footer">
+        <p id="users-total-text">Carregando...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       BOTÃO FLUTUANTE DE AÇÃO (FAB)
+       ======================================== -->
+  <button class="fab-button" id="fab-center-map" title="Centralizar no meu local">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="1"></circle>
+      <path d="M12 8v-2"></path>
+      <path d="M12 18v2"></path>
+      <path d="M8 12H6"></path>
+      <path d="M18 12h2"></path>
+    </svg>
+  </button>
+
+  <!-- ========================================
+       POPUP DO USUÁRIO (Bottom Sheet Modal)
+       ======================================== -->
+  <div id="user-popup" class="user-popup-fullscreen hidden">
+    <div class="popup-overlay"></div>
+    
+    <div class="popup-content-fullscreen">
+      <!-- Botão de Fechar -->
+      <button id="close-popup-btn" class="close-popup-btn" aria-label="Fechar">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <line x1="18" y1="6" x2="6" y2="18"></line>
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-    </div>
 
-    <div class="modal-body">
-      <div class="story-upload-area" id="story-upload-area">
-        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
-        </svg>
-        <p class="upload-text">Clique ou arraste uma foto/vídeo</p>
-        <input type="file" id="story-file-input" accept="image/*,video/*" hidden>
+      <!-- Imagem do Usuário (Carousel) -->
+      <div class="popup-image-carousel">
+        <img id="popup-avatar" src="" alt="Avatar" class="popup-image">
+        <div class="carousel-indicators">
+          <span class="indicator active"></span>
+          <span class="indicator"></span>
+          <span class="indicator"></span>
+        </div>
       </div>
 
-      <textarea id="story-caption" class="story-caption" placeholder="Adicione uma legenda (opcional)"></textarea>
-    </div>
+      <!-- Informações do Usuário -->
+      <div class="popup-user-info">
+        <div class="user-header">
+          <div>
+            <h3 id="popup-username"></h3>
+            <p id="popup-location" class="location-text"></p>
+          </div>
+          <div class="distance-badge" id="popup-distance"></div>
+        </div>
 
-    <div class="modal-footer">
-      <button id="cancel-story-btn" class="btn btn-secondary">Cancelar</button>
-      <button id="publish-story-btn" class="btn btn-primary">Publicar</button>
+        <!-- Bio/Descrição -->
+        <p id="popup-bio" class="user-bio"></p>
+
+        <!-- Tags/Hobbies -->
+        <div id="popup-hobbies" class="hobbies-tags"></div>
+      </div>
+
+      <!-- Ações -->
+      <div class="popup-actions-fullscreen">
+        <button id="reject-btn" class="action-btn action-btn-reject">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+        
+        <button id="message-btn" class="action-btn action-btn-message">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </button>
+        
+        <button id="like-btn" class="action-btn action-btn-like">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- ========================================
-     OVERLAY DO MODAL
-     ======================================== -->
-<div id="modal-overlay" class="modal-overlay hidden"></div>
+  <!-- ========================================
+       STORIES SECTION (Flutuante no topo)
+       ======================================== -->
+  <div class="stories-section-floating" id="stories-section">
+    <!-- Botao de Expansao (Sempre visivel) -->
+    <button id="stories-toggle-btn" class="stories-toggle-btn" title="Abrir Stories">
+      <span class="stories-toggle-icon">📍</span>
+    </button>
+
+    <!-- Conteudo das Stories (Expansivel) -->
+    <div class="stories-container">
+      <div class="stories-header">
+        <h3 class="stories-title">Stories</h3>
+        <button id="add-story-btn" class="add-story-btn" title="Adicionar Story">
+          <span class="add-story-icon">+</span>
+        </button>
+      </div>
+
+      <div class="stories-carousel" id="stories-carousel">
+        <div class="story-skeleton">
+          <div class="story-skeleton-avatar"></div>
+          <div class="story-skeleton-text"></div>
+        </div>
+        <div class="story-skeleton">
+          <div class="story-skeleton-avatar"></div>
+          <div class="story-skeleton-text"></div>
+        </div>
+        <div class="story-skeleton">
+          <div class="story-skeleton-avatar"></div>
+          <div class="story-skeleton-text"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       MODAL PARA ADICIONAR STORY
+       ======================================== -->
+  <div id="add-story-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Adicionar Story</h2>
+        <button id="close-modal-btn" class="close-modal-btn" aria-label="Fechar">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="story-upload-area" id="story-upload-area">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <p class="upload-text">Clique ou arraste uma foto/vídeo</p>
+          <input type="file" id="story-file-input" accept="image/*,video/*" hidden>
+        </div>
+
+        <textarea id="story-caption" class="story-caption" placeholder="Adicione uma legenda (opcional)"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button id="cancel-story-btn" class="btn btn-secondary">Cancelar</button>
+        <button id="publish-story-btn" class="btn btn-primary">Publicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       OVERLAY DO MODAL
+       ======================================== -->
+  <div id="modal-overlay" class="modal-overlay hidden"></div>
+
+</div>
 
 <!-- ========================================
      SCRIPTS

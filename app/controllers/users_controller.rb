@@ -4,16 +4,14 @@ class UsersController < ApplicationController
 
   # Página do mapa
   def discover
-    @nearby_users = DiscoveryService.new(current_user).find_nearby_users
+    # A busca inicial de usuários próximos será feita pelo JavaScript após a geolocalização
+    # @nearby_users = DiscoveryService.new(current_user).find_nearby_users
   end
 
    # Perfil Público
   def show
     # Busca o usuário pelo ID passado na URL (params[:id])
     @user = User.find(params[:id])
-
-    # Se você quiser que apenas usuários logados vejam perfis:
-    # before_action :authenticate_user! já deve estar no topo da classe.
 
   rescue ActiveRecord::RecordNotFound
     # Trata o caso de um ID inválido ou usuário inexistente
@@ -50,17 +48,33 @@ class UsersController < ApplicationController
 
   # Endpoint JSON para retornar usuários próximos
   def nearby
-    if params[:latitude].present? && params[:longitude].present?
+    # 1. Captura os parâmetros de localização e o novo parâmetro de alcance (range)
+    latitude = params[:latitude].to_f
+    longitude = params[:longitude].to_f
+    # O valor padrão é 50 km, mas o JavaScript pode enviar qualquer valor de 1 a 2000
+    range_km = params[:range].to_i.presence || 50 
+
+    # 2. Atualiza a localização do usuário atual, se fornecida
+    if latitude.present? && longitude.present?
       current_user.update(
-        latitude: params[:latitude],
-        longitude: params[:longitude]
+        latitude: latitude,
+        longitude: longitude
       )
     end
 
-    users = DiscoveryService.new(current_user).find_nearby_users(10)
+    # 3. Validação básica
+    if latitude.zero? && longitude.zero?
+      render json: [], status: :ok
+      return
+    end
 
+    # 4. Busca usuários próximos, passando o novo parâmetro de alcance (range_km)
+    # Assumindo que DiscoveryService.find_nearby_users agora aceita o raio como segundo argumento
+    users = DiscoveryService.new(current_user).find_nearby_users(range_km)
+
+    # 5. Renderiza a resposta JSON
     render json: users.as_json(
-      only: [:id, :username, :latitude, :longitude, :avatar_url, :distance_km]
+      only: [:id, :username, :latitude, :longitude, :avatar_url, :distance_km, :city]
     )
   rescue => e
     Rails.logger.error "Erro em /users/nearby: #{e.message}"

@@ -1250,3 +1250,54 @@
 .stories-toggle-icon {
   font-size: 1.5rem;
 }
+
+
+#gender-filter-container {
+  position: absolute;
+  top: 120px;
+  left: 1rem;
+  z-index: 99;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+
+  @media (max-width: 768px) {
+    top: 100px;
+    left: 0.75rem;
+  }
+}
+
+.gender-filter-btn {
+  padding: 0.5rem 1rem;
+  border: 2px solid #e0e0e0;
+  background: white;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #666;
+
+  &:hover {
+    border-color: #d4af37;
+    color: #d4af37;
+  }
+
+  &.active {
+    background: #d4af37;
+    border-color: #d4af37;
+    color: white;
+    box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+  }
+}
+
+.filter-icon {
+  font-size: 1.1rem;
+}

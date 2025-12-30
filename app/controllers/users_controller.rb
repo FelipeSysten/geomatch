@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     # @nearby_users = DiscoveryService.new(current_user).find_nearby_users
   end
 
-   # Perfil Público
+  # Perfil Público
   def show
     # Busca o usuário pelo ID passado na URL (params[:id])
     @user = User.find(params[:id])
@@ -48,11 +48,11 @@ class UsersController < ApplicationController
 
   # Endpoint JSON para retornar usuários próximos
   def nearby
-    # 1. Captura os parâmetros de localização e o novo parâmetro de alcance (range)
+    # 1. Captura os parâmetros
     latitude = params[:latitude].to_f
     longitude = params[:longitude].to_f
-    # O valor padrão é 50 km, mas o JavaScript pode enviar qualquer valor de 1 a 2000
     range_km = params[:range].to_i.presence || 50 
+    gender_filter = params[:gender]&.downcase
 
     # 2. Atualiza a localização do usuário atual, se fornecida
     if latitude.present? && longitude.present?
@@ -62,20 +62,21 @@ class UsersController < ApplicationController
       )
     end
 
-    # 3. Validação básica
+    # 3. Validação básica (Proteção contra coordenadas 0.0, 0.0 se necessário)
     if latitude.zero? && longitude.zero?
       render json: [], status: :ok
       return
     end
 
-    # 4. Busca usuários próximos, passando o novo parâmetro de alcance (range_km)
-    # Assumindo que DiscoveryService.find_nearby_users agora aceita o raio como segundo argumento
-    users = DiscoveryService.new(current_user).find_nearby_users(range_km)
+    # 4. Busca usuários próximos com filtros
+    # Nota: Mantive a chamada que passa o gender_filter, pois parece ser a mais completa
+    users = DiscoveryService.new(current_user).find_nearby_users(range_km, gender_filter)
 
-    # 5. Renderiza a resposta JSON
+    # 5. Renderiza a resposta JSON formatada
     render json: users.as_json(
       only: [:id, :username, :latitude, :longitude, :avatar_url, :distance_km, :city]
     )
+
   rescue => e
     Rails.logger.error "Erro em /users/nearby: #{e.message}"
     render json: { error: "Erro interno ao buscar usuários próximos" },
@@ -91,15 +92,11 @@ class UsersController < ApplicationController
     @user = current_user
 
     # 1. Lida com o upload de novas fotos separadamente
-    # Se o parâmetro album_photos estiver presente, anexa as novas fotos ao álbum.
     if params[:user][:album_photos].present?
       @user.album_photos.attach(params[:user][:album_photos])
     end
 
     # 2. Prepara os parâmetros para o update do restante do usuário
-    # Remove o parâmetro album_photos para evitar que o Rails tente
-    # processá-lo novamente no update, o que pode causar erros ou
-    # comportamento inesperado (como tentar substituir em vez de adicionar).
     user_update_params = user_params.except(:album_photos)
 
     # 3. Atualiza o restante dos atributos do usuário
@@ -110,22 +107,18 @@ class UsersController < ApplicationController
     end
   end
 
-  # Ação para rejeitar um usuário (usada pela rota POST /lead/reject)
+  # Ação para rejeitar um usuário
   def reject
     rejected_user = User.find(params[:user_id])
-
     # Exemplo simples: apenas ignora e segue
-    # (depois você pode salvar rejeição no banco)
     redirect_to lead_path
   rescue ActiveRecord::RecordNotFound
-    # Se o ID do usuário não for encontrado, apenas redireciona para a próxima lead
     redirect_to lead_path, alert: "Usuário a ser rejeitado não encontrado."
   end
 
   private
 
   def user_params
-    # O parâmetro album_photos: [] já está correto para permitir o array de arquivos
     params.require(:user).permit(
       :avatar,
       :username,
@@ -134,9 +127,8 @@ class UsersController < ApplicationController
       :gender,
       :share_location,
       :interested_in,
-      { hobbies_list: [] }, # RECEBE ARRAY
-      album_photos: []      # <--- CORRETO: Permite o array de arquivos
+      { hobbies_list: [] },
+      album_photos: []
     )
   end
-
 end

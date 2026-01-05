@@ -4,10 +4,11 @@ window.L = L;
 // Constantes
 const INITIAL_RANGE_KM = 5;
 const MAX_RANGE_KM = 500;
-const STORAGE_KEYS = {
-  RANGE: "geomatch_range",
-  GENDER_FILTER: "geomatch_gender_filter",
-};
+  const STORAGE_KEYS = {
+    RANGE: "geomatch_range",
+    GENDER_FILTER: "geomatch_gender_filter",
+    INVISIBLE_MODE: "geomatch_invisible_mode",
+  };
 
 ["DOMContentLoaded", "turbo:load"].forEach((evt) => {
   document.addEventListener(evt, () => {
@@ -61,6 +62,7 @@ const STORAGE_KEYS = {
     const usersList = document.getElementById("users-list");
     const usersCountElement = document.getElementById("nearby-count");
     const usersTotalText = document.getElementById("users-total-text");
+    const toggleVisibilityBtn = document.getElementById("toggle-visibility-btn");
 
     // ========================================
     // FILTROS DE GÊNERO
@@ -188,6 +190,44 @@ const STORAGE_KEYS = {
           map.setView([userLatitude, userLongitude], 13);
           map.flyTo([userLatitude, userLongitude], 13, { duration: 1 });
         }
+      });
+    }
+
+    // ========================================
+    // MODO INVISÍVEL
+    // ========================================
+    if (toggleVisibilityBtn) {
+      let isInvisible = localStorage.getItem(STORAGE_KEYS.INVISIBLE_MODE) === "true";
+      
+      const updateVisibilityUI = () => {
+        const eyeOpen = toggleVisibilityBtn.querySelector(".eye-open");
+        const eyeClosed = toggleVisibilityBtn.querySelector(".eye-closed");
+        
+        if (isInvisible) {
+          toggleVisibilityBtn.classList.add("active");
+          eyeOpen.classList.add("hidden");
+          eyeClosed.classList.remove("hidden");
+          toggleVisibilityBtn.title = "Modo Invisível: Ativado";
+        } else {
+          toggleVisibilityBtn.classList.remove("active");
+          eyeOpen.classList.remove("hidden");
+          eyeClosed.classList.add("hidden");
+          toggleVisibilityBtn.title = "Modo Invisível: Desativado";
+        }
+      };
+
+      // Inicializar UI
+      updateVisibilityUI();
+
+      toggleVisibilityBtn.addEventListener("click", () => {
+        isInvisible = !isInvisible;
+        localStorage.setItem(STORAGE_KEYS.INVISIBLE_MODE, isInvisible);
+        updateVisibilityUI();
+        
+        // Aqui você pode adicionar uma chamada de API para atualizar o status no servidor
+        // fetch('/users/update_visibility', { method: 'POST', body: JSON.stringify({ invisible: isInvisible }) });
+        
+        console.log(`Modo invisível: ${isInvisible ? 'Ativado' : 'Desativado'}`);
       });
     }
 
